@@ -1,0 +1,9 @@
+# robots.txt for qahwajie-alriyadh.com
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://qahwajie-alriyadh.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

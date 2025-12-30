@@ -138,22 +138,6 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        {/* Clixtell - حماية من النقرات الوهمية - يجب أن يكون بعد body مباشرة */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              var script=document.createElement('script');
-              var prefix=document.location.protocol;
-              script.async=true;script.type='text/javascript';
-              var target=prefix + '//scripts.clixtell.com/track.js';
-              script.src=target;var elem=document.head;
-              elem.appendChild(script);
-            `
-          }}
-        />
-        <noscript>
-          <img src="//tracker.clixtell.com/track/t.gif" alt="" />
-        </noscript>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
           تخطي للمحتوى الرئيسي
         </a>
@@ -171,6 +155,22 @@ export default function RootLayout({ children }) {
             }}
           />
         </AuthProvider>
+        {/* Clixtell - حماية من النقرات الوهمية - قبل إغلاق body */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              var script=document.createElement('script');
+              var prefix=document.location.protocol;
+              script.async=true;script.type='text/javascript';
+              var target=prefix + '//scripts.clixtell.com/track.js';
+              script.src=target;var elem=document.head;
+              elem.appendChild(script);
+            `
+          }}
+        />
+        <noscript>
+          <img src="//tracker.clixtell.com/track/t.gif" alt="" />
+        </noscript>
       </body>
     </html>
   );

@@ -157,13 +157,20 @@ export default function RootLayout({ children }) {
           />
         </AuthProvider>
         {/* Clixtell - حماية من النقرات الوهمية */}
-        <Script
-          id="clixtell-tracking"
-          strategy="afterInteractive"
-          src="//scripts.clixtell.com/track.js"
-        />
+        <Script id="clixtell-tracking" strategy="afterInteractive">
+          {`
+            var script=document.createElement('script');
+            var prefix=document.location.protocol;
+            script.async=true;
+            script.type='text/javascript';
+            var target=prefix + '//scripts.clixtell.com/track.js';
+            script.src=target;
+            var elem=document.head;
+            elem.appendChild(script);
+          `}
+        </Script>
         <noscript>
-          <img src="//tracker.clixtell.com/track/t.gif" alt="" />
+          <img src="https://tracker.clixtell.com/track/t.gif" alt="" />
         </noscript>
       </body>
     </html>

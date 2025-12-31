@@ -1,6 +1,7 @@
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/contexts/AuthContext';
+import Script from 'next/script';
 
 export const metadata = {
   metadataBase: new URL('https://qahwajie-alriyadh.com'),
@@ -155,6 +156,15 @@ export default function RootLayout({ children }) {
             }}
           />
         </AuthProvider>
+        {/* Clixtell - حماية من النقرات الوهمية */}
+        <Script
+          id="clixtell-tracking"
+          strategy="afterInteractive"
+          src="//scripts.clixtell.com/track.js"
+        />
+        <noscript>
+          <img src="//tracker.clixtell.com/track/t.gif" alt="" />
+        </noscript>
       </body>
     </html>
   );

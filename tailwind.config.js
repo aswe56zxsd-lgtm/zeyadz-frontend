@@ -9,17 +9,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#c59a35',
-        gold: '#c59a35',
-        charcoal: '#1c1c1c',
-        'background-light': '#2a2a2a',
-        'background-dark': '#1c1c1c',
-        'surface-dark': '#252525',
-        'text-main': '#FFFFFF',
-        'text-muted': '#b0b0b0',
+        primary: '#8305a5',
+        purple: '#8305a5',
+        orange: '#f17405',
+        'background-light': '#FFFFFF',
+        'surface-light': '#f8f8f8',
+        'text-main': '#333333',
+        'text-muted': '#666666',
+        'border-color': '#e0e0e0',
       },
       fontFamily: {
-        main: ['Handicrafts', 'Segoe UI', 'Tahoma', 'Arial', 'sans-serif'],
+        main: ['TheYearofHandicrafts', 'Segoe UI', 'Tahoma', 'Arial', 'sans-serif'],
       },
       borderRadius: {
         DEFAULT: '0.25rem',

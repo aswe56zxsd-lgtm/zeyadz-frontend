@@ -1,49 +1,69 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  poweredByHeader: false,
+  compress: true,
+  reactStrictMode: true,
   images: {
-    // تفعيل تحسين الصور لتقليل الحجم تلقائياً
     unoptimized: false,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'qahwajie-alriyadh.com',
+        hostname: 'qahwajiz.com',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'www.qahwajie-alriyadh.com',
+        hostname: 'www.qahwajiz.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5000',
         pathname: '/**',
       },
     ],
-    // أحجام الصور المستجيبة - محسنة لتقليل الحجم
     deviceSizes: [380, 480, 640, 750, 828, 1080],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // تقليل جودة الصور قليلاً للأداء الأفضل
     minimumCacheTTL: 31536000,
-    formats: ['image/webp'],
+    formats: ['image/webp', 'image/avif'],
   },
-  // تحسين Performance
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // إزالة polyfills غير ضرورية للمتصفحات الحديثة
-  swcMinify: true,
-  // تحسين الحزم
   experimental: {
-    optimizePackageImports: ['react-hot-toast', 'date-fns', 'date-fns-jalali'],
+    optimizeCss: true,
   },
-  // تقليل حجم JavaScript
-  modularizeImports: {
-    'date-fns': {
-      transform: 'date-fns/{{member}}',
-    },
-  },
-  // Headers للتخزين المؤقت
   async headers() {
     return [
       {
-        source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp)',
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+      {
+        source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
         headers: [
           {
             key: 'Cache-Control',
@@ -74,4 +94,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-

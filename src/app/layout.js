@@ -1,37 +1,40 @@
 import './globals.css';
-import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from '@/contexts/AuthContext';
-import Script from 'next/script';
 
 export const metadata = {
-  metadataBase: new URL('https://qahwajie-alriyadh.com'),
-  title: 'قهوجيين وصبابين الرياض | أفضل خدمات القهوجي والصباب في الرياض',
-  description: 'قهوجيين وصبابين الرياض - نقدم أفضل خدمات القهوجي والصباب لجميع المناسبات والحفلات والأعراس. قهوجي الرياض، صبابين قهوة، مباشرين قهوة عربية أصيلة. احجز الآن 0509702164',
-  keywords: 'قهوجي الرياض, قهوجيين وصبابين الرياض, صبابين قهوة, مباشرين قهوة, قهوجي للحفلات, صبابات قهوة الرياض, أرقام قهوجيين بالرياض, أفضل قهوجي بالرياض, قهوجي, صباب قهوة, خدمات ضيافة الرياض, قهوة عربية, مباشرين حفلات',
-  authors: [{ name: 'قهوجيين وصبابين الرياض' }],
-  creator: 'قهوجيين وصبابين الرياض',
-  publisher: 'قهوجيين وصبابين الرياض',
+  metadataBase: new URL('https://qahwajiz.com'),
+  title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات والحفلات - 0509702164',
+  description: 'قهوجي الرياض - أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات. قهوجي وصباب محترف للأعراس والمؤتمرات. احجز الآن 0509702164',
+  keywords: 'قهوجي الرياض, قهوجيين الرياض, صبابين الرياض, قهوجي وصباب, صبابات قهوة, مباشرين قهوة, قهوجيين وصبابين بالرياض, أرقام قهوجيين, قهوجي للمناسبات, صباب قهوة الرياض',
+  authors: [{ name: 'قهوجي الرياض' }],
+  creator: 'قهوجي الرياض',
+  publisher: 'قهوجي الرياض',
+  formatDetection: {
+    telephone: true,
+    date: false,
+    address: false,
+    email: false,
+  },
   openGraph: {
-    title: 'قهوجيين وصبابين الرياض | أفضل خدمات القهوجي والصباب',
-    description: 'نقدم أفضل خدمات القهوجي والصباب في الرياض لجميع المناسبات والحفلات والأعراس. احجز الآن 0509702164',
-    url: 'https://qahwajie-alriyadh.com',
-    siteName: 'قهوجيين وصبابين الرياض',
+    title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات - 0509702164',
+    description: 'أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة 20 عاماً. احجز الآن!',
+    url: 'https://qahwajiz.com',
+    siteName: 'قهوجي الرياض',
     locale: 'ar_SA',
     type: 'website',
     images: [
       {
-        url: 'https://qahwajie-alriyadh.com/uploads/images/1.webp',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'قهوجيين وصبابين الرياض',
+        alt: 'قهوجي الرياض - قهوجيين وصبابين',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'قهوجيين وصبابين الرياض | أفضل قهوجي في الرياض',
-    description: 'أفضل خدمات القهوجي والصباب في الرياض لجميع المناسبات. احجز الآن!',
-    images: ['https://qahwajie-alriyadh.com/uploads/images/1.webp'],
+    title: 'قهوجي الرياض | قهوجيين وصبابين للمناسبات',
+    description: 'أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -45,34 +48,147 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: 'https://qahwajie-alriyadh.com',
+    canonical: 'https://qahwajiz.com',
+    languages: {
+      'ar-SA': 'https://qahwajiz.com',
+    },
   },
   verification: {
-    google: '2Caiv0YqsLOtKjgh8KfY9p8Adw0m3rO_3ih-VxQdVoo',
+    google: 'verification_token',
   },
+  category: 'خدمات',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#8305a5',
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://qahwajiz.com/#business",
+        "name": "قهوجي الرياض",
+        "alternateName": "قهوجيين وصبابين الرياض",
+        "description": "أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة تزيد عن 20 عاماً في الضيافة العربية الأصيلة.",
+        "url": "https://qahwajiz.com",
+        "telephone": "+966509702164",
+        "priceRange": "$$",
+        "image": "https://qahwajiz.com/og-image.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "الرياض",
+          "addressRegion": "الرياض",
+          "addressCountry": "SA"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "24.7136",
+          "longitude": "46.6753"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "00:00",
+          "closes": "23:59"
+        },
+        "areaServed": {
+          "@type": "City",
+          "name": "الرياض"
+        },
+        "serviceType": ["قهوجي", "صبابين", "ضيافة", "خدمات مناسبات"],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "500"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://qahwajiz.com/#website",
+        "url": "https://qahwajiz.com",
+        "name": "قهوجي الرياض",
+        "description": "أفضل خدمات قهوجيين وصبابين الرياض",
+        "publisher": {
+          "@id": "https://qahwajiz.com/#business"
+        },
+        "inLanguage": "ar-SA"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://qahwajiz.com/#webpage",
+        "url": "https://qahwajiz.com",
+        "name": "قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات",
+        "isPartOf": {
+          "@id": "https://qahwajiz.com/#website"
+        },
+        "about": {
+          "@id": "https://qahwajiz.com/#business"
+        },
+        "description": "أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض",
+        "inLanguage": "ar-SA"
+      },
+      {
+        "@type": "Service",
+        "name": "خدمات قهوجيين وصبابين الرياض",
+        "provider": {
+          "@id": "https://qahwajiz.com/#business"
+        },
+        "serviceType": "خدمات ضيافة ومناسبات",
+        "areaServed": "الرياض",
+        "description": "خدمات قهوجيين وصبابين محترفين للمناسبات والحفلات والأعراس في الرياض"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "ما هي أسعار خدمات قهوجيين وصبابين؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "تختلف الأسعار حسب نوع المناسبة وعدد الضيوف والخدمات المطلوبة. اتصل بنا على 0509702164 للحصول على عرض سعر مفصل."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "هل تقدمون خدمة قهوجيات للمناسبات النسائية؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "نعم، نوفر قهوجيات الرياض وصبابات الرياض المحترفات للمناسبات النسائية."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "ما المناطق التي تغطونها في الرياض؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "نغطي جميع أحياء ومناطق الرياض وضواحيها: شمال الرياض، جنوب الرياض، شرق الرياض، غرب الرياض."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "هل يمكن حجز الخدمة في نفس اليوم؟",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "نعم، نوفر خدمة الحجز الفوري حسب التوفر."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#c59a35" />
-        <link rel="icon" href="/favicon.ico" />
-        {/* Preconnect للصور - مهم جداً لتسريع LCP */}
-        <link rel="preconnect" href="https://qahwajie-alriyadh.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.qahwajie-alriyadh.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://qahwajie-alriyadh.com" />
-        <link rel="dns-prefetch" href="https://www.qahwajie-alriyadh.com" />
-        {/* Preload LCP image - High Priority */}
-        <link
-          rel="preload"
-          href="https://qahwajie-alriyadh.com/uploads/images/1.webp"
-          as="image"
-          type="image/webp"
-          fetchpriority="high"
-        />
-        {/* Preload critical fonts */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
         <link
           rel="preload"
           href="/fonts/TheYearofHandicrafts-Regular.woff2"
@@ -87,91 +203,21 @@ export default function RootLayout({ children }) {
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        {/* Schema.org للأعمال المحلية - مهم جداً لـ SEO */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "name": "قهوجيين وصبابين الرياض",
-              "alternateName": "قهوجي الرياض",
-              "description": "أفضل خدمات القهوجي والصباب في الرياض لجميع المناسبات والحفلات والأعراس. نقدم القهوة العربية الأصيلة بأيدي خبراء محترفين.",
-              "url": "https://qahwajie-alriyadh.com",
-              "telephone": "+966509702164",
-              "email": "info@qahwajie-alriyadh.com",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "الرياض",
-                "addressLocality": "الرياض",
-                "addressRegion": "منطقة الرياض",
-                "postalCode": "12345",
-                "addressCountry": "SA"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": "24.7136",
-                "longitude": "46.6753"
-              },
-              "image": "https://qahwajie-alriyadh.com/uploads/images/1.webp",
-              "priceRange": "$$",
-              "openingHoursSpecification": {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                "opens": "08:00",
-                "closes": "23:00"
-              },
-              "sameAs": [
-                "https://wa.me/966509702164"
-              ],
-              "areaServed": {
-                "@type": "City",
-                "name": "الرياض"
-              },
-              "serviceType": ["قهوجي", "صباب قهوة", "خدمات ضيافة", "قهوة عربية"],
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "150"
-              }
-            })
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+      <body className="bg-white text-[#333333]">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[9999] focus:bg-[#8305a5] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8305a5]"
+        >
           تخطي للمحتوى الرئيسي
         </a>
-        <AuthProvider>
-          <main id="main-content">
-            {children}
-          </main>
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                fontFamily: 'Handicrafts, Segoe UI, Tahoma, Arial, sans-serif',
-              },
-            }}
-          />
-        </AuthProvider>
-        {/* Clixtell - حماية من النقرات الوهمية */}
-        <Script id="clixtell-tracking" strategy="afterInteractive">
-          {`
-            var script=document.createElement('script');
-            var prefix=document.location.protocol;
-            script.async=true;
-            script.type='text/javascript';
-            var target=prefix + '//scripts.clixtell.com/track.js';
-            script.src=target;
-            var elem=document.head;
-            elem.appendChild(script);
-          `}
-        </Script>
-        <noscript>
-          <img src="https://tracker.clixtell.com/track/t.gif" alt="" />
-        </noscript>
+        <main id="main-content" role="main">
+          {children}
+        </main>
       </body>
     </html>
   );

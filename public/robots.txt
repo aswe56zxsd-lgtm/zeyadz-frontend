@@ -1,0 +1,9 @@
+# robots.txt for qahwajiz.com
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://qahwajiz.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

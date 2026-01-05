@@ -245,7 +245,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#8305A5] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#B742A7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-[#666666] font-medium">جاري التحميل...</p>
         </div>
       </div>
@@ -264,7 +264,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#f8f9fa]" dir="rtl">
       {/* Header - Fixed Position */}
-      <header className="bg-[#8305A5] text-white shadow-lg fixed top-0 left-0 right-0 z-50">
+      <header className="bg-[#B742A7] text-white shadow-lg fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 sm:h-24">
             {/* Logo & Title */}
@@ -291,7 +291,7 @@ export default function AdminPage() {
               </a>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-5 py-3 bg-[#F17405] hover:bg-[#d96504] rounded-xl transition-all duration-300 text-sm font-medium shadow-md"
+                className="flex items-center gap-2 px-5 py-3 bg-[#88CFEE] hover:bg-[#6ABFE5] rounded-xl transition-all duration-300 text-sm font-medium shadow-md"
               >
                 <LogoutIcon className="w-5 h-5" />
                 <span>خروج</span>
@@ -310,7 +310,7 @@ export default function AdminPage() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#6a0485] border-t border-white/10">
+          <div className="md:hidden bg-[#9A3690] border-t border-white/10">
             <div className="container mx-auto px-4 py-4 space-y-3">
               <a
                 href="/"
@@ -322,7 +322,7 @@ export default function AdminPage() {
               </a>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-5 py-4 bg-[#F17405] hover:bg-[#d96504] rounded-xl transition-colors text-base font-medium"
+                className="w-full flex items-center gap-3 px-5 py-4 bg-[#88CFEE] hover:bg-[#6ABFE5] rounded-xl transition-colors text-base font-medium"
               >
                 <LogoutIcon className="w-6 h-6" />
                 <span>تسجيل الخروج</span>
@@ -363,8 +363,8 @@ export default function AdminPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'bg-[#8305A5] text-white shadow-lg shadow-[#8305A5]/30'
-                      : 'bg-transparent text-[#666666] hover:bg-[#8305A5]/5 hover:text-[#8305A5]'
+                      ? 'bg-[#B742A7] text-white shadow-lg shadow-[#B742A7]/30'
+                      : 'bg-transparent text-[#666666] hover:bg-[#B742A7]/5 hover:text-[#B742A7]'
                   }`}
                 >
                   <IconComponent className="w-5 h-5" />
@@ -386,7 +386,7 @@ export default function AdminPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
                     activeTab === tab.id
-                      ? 'bg-[#8305A5] text-white shadow-lg'
+                      ? 'bg-[#B742A7] text-white shadow-lg'
                       : 'bg-[#f8f9fa] text-[#666666]'
                   }`}
                 >
@@ -404,7 +404,7 @@ export default function AdminPage() {
           {activeTab === 'sections' && data?.sections && (
             <div className="p-4 sm:p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8305A5] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B742A7] rounded-xl flex items-center justify-center">
                   <SectionIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
@@ -539,7 +539,7 @@ export default function AdminPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#8305A5] text-white py-4 mt-8">
+      <footer className="bg-[#B742A7] text-white py-4 mt-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-white/70 text-sm">
             © {new Date().getFullYear()} قهوجي الرياض - لوحة التحكم
@@ -560,7 +560,7 @@ function SectionEditor({ section, onSave, saving }) {
   };
 
   return (
-    <div className="border-2 border-[#e9ecef] rounded-xl overflow-hidden hover:border-[#8305A5]/30 transition-colors">
+    <div className="border-2 border-[#e9ecef] rounded-xl overflow-hidden hover:border-[#B742A7]/30 transition-colors">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full p-4 sm:p-5 flex items-center justify-between bg-[#f8f9fa] hover:bg-[#e9ecef] transition-colors"
@@ -569,7 +569,7 @@ function SectionEditor({ section, onSave, saving }) {
           <div className={`w-2 h-2 rounded-full ${section.is_active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
           <span className="font-semibold text-[#333333] text-sm sm:text-base">{section.section_name}</span>
         </div>
-        <span className={`transform transition-transform duration-300 text-[#8305A5] ${expanded ? 'rotate-180' : ''}`}>
+        <span className={`transform transition-transform duration-300 text-[#B742A7] ${expanded ? 'rotate-180' : ''}`}>
           <ChevronDownIcon className="w-5 h-5" />
         </span>
       </button>
@@ -586,7 +586,7 @@ function SectionEditor({ section, onSave, saving }) {
                   <textarea
                     value={content[key]}
                     onChange={(e) => handleChange(key, e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
                     rows={3}
                   />
                 ) : (
@@ -594,7 +594,7 @@ function SectionEditor({ section, onSave, saving }) {
                     type="text"
                     value={content[key]}
                     onChange={(e) => handleChange(key, e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-sm sm:text-base"
                   />
                 )
               ) : (
@@ -605,7 +605,7 @@ function SectionEditor({ section, onSave, saving }) {
                       handleChange(key, JSON.parse(e.target.value));
                     } catch {}
                   }}
-                  className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none font-mono text-xs sm:text-sm transition-colors resize-y min-h-[120px]"
+                  className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none font-mono text-xs sm:text-sm transition-colors resize-y min-h-[120px]"
                   rows={5}
                   dir="ltr"
                 />
@@ -615,7 +615,7 @@ function SectionEditor({ section, onSave, saving }) {
           <button
             onClick={() => onSave(content)}
             disabled={saving}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-[#8305A5] text-white rounded-xl hover:bg-[#6a0485] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-[#B742A7] text-white rounded-xl hover:bg-[#9A3690] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             <SaveIcon className="w-5 h-5" />
             {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
@@ -660,7 +660,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8305A5] rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B742A7] rounded-xl flex items-center justify-center flex-shrink-0">
             <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
@@ -670,7 +670,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
         </div>
         <button
           onClick={handleNew}
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-[#F17405] text-white rounded-xl hover:bg-[#d96504] transition-all duration-300 font-medium shadow-lg shadow-[#F17405]/30 w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 px-5 py-3 bg-[#88CFEE] text-white rounded-xl hover:bg-[#6ABFE5] transition-all duration-300 font-medium shadow-lg shadow-[#88CFEE]/30 w-full sm:w-auto"
         >
           <PlusIcon className="w-5 h-5" />
           <span>إضافة جديد</span>
@@ -679,8 +679,8 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
 
       {/* Edit Form */}
       {editingItem && (
-        <div className="bg-[#f8f9fa] p-4 sm:p-6 rounded-2xl mb-6 border-2 border-[#8305A5]/20">
-          <h3 className="text-lg font-bold text-[#8305A5] mb-4">
+        <div className="bg-[#f8f9fa] p-4 sm:p-6 rounded-2xl mb-6 border-2 border-[#B742A7]/20">
+          <h3 className="text-lg font-bold text-[#B742A7] mb-4">
             {editingItem === 'new' ? 'إضافة عنصر جديد' : 'تعديل العنصر'}
           </h3>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -694,14 +694,14 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                     value={formData[field.name] || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
                     rows={3}
                   />
                 ) : field.type === 'select' ? (
                   <select
                     value={formData[field.name] || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base bg-white"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-sm sm:text-base bg-white"
                   >
                     <option value="">اختر...</option>
                     {field.options.map(opt => (
@@ -714,7 +714,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                       type="checkbox"
                       checked={formData[field.name] || false}
                       onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.checked }))}
-                      className="w-5 h-5 text-[#8305A5] rounded border-2 border-[#e9ecef] focus:ring-[#8305A5]"
+                      className="w-5 h-5 text-[#B742A7] rounded border-2 border-[#e9ecef] focus:ring-[#B742A7]"
                     />
                     <span className="text-[#666666] text-sm">تفعيل العنصر</span>
                   </label>
@@ -727,7 +727,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                       [field.name]: field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value
                     }))}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-sm sm:text-base"
                   />
                 )}
               </div>
@@ -737,7 +737,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#8305A5] text-white rounded-xl hover:bg-[#6a0485] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#B742A7] text-white rounded-xl hover:bg-[#9A3690] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium w-full sm:w-auto"
             >
               <SaveIcon className="w-5 h-5" />
               {saving ? 'جاري الحفظ...' : 'حفظ'}
@@ -760,7 +760,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
             <p className="text-[#666666]">لا توجد عناصر</p>
             <button
               onClick={handleNew}
-              className="mt-4 text-[#8305A5] hover:text-[#6a0485] font-medium text-sm"
+              className="mt-4 text-[#B742A7] hover:text-[#9A3690] font-medium text-sm"
             >
               + إضافة عنصر جديد
             </button>
@@ -779,7 +779,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                   </p>
                 </div>
                 {item.category && (
-                  <span className="inline-block text-xs text-white bg-[#8305A5] px-2.5 py-1 rounded-lg mt-1">
+                  <span className="inline-block text-xs text-white bg-[#B742A7] px-2.5 py-1 rounded-lg mt-1">
                     {item.category}
                   </span>
                 )}
@@ -790,7 +790,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
               <div className="flex gap-2 flex-shrink-0">
                 <button
                   onClick={() => handleEdit(item)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-[#8305A5] bg-[#8305A5]/10 hover:bg-[#8305A5] hover:text-white rounded-xl transition-all duration-300 text-sm font-medium"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-[#B742A7] bg-[#B742A7]/10 hover:bg-[#B742A7] hover:text-white rounded-xl transition-all duration-300 text-sm font-medium"
                 >
                   <EditIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">تعديل</span>

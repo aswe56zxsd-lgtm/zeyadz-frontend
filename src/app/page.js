@@ -1,959 +1,794 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
-// API Base URL
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
-// SVG Icons Components
-const CoffeeIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 21V19H20V21H2ZM20 8V5H18V8H20ZM20 3C20.5304 3 21.0391 3.21071 21.4142 3.58579C21.7893 3.96086 22 4.46957 22 5V8C22 8.53043 21.7893 9.03914 21.4142 9.41421C21.0391 9.78929 20.5304 10 20 10H18V13C18 14.0609 17.5786 15.0783 16.8284 15.8284C16.0783 16.5786 15.0609 17 14 17H6C4.93913 17 3.92172 16.5786 3.17157 15.8284C2.42143 15.0783 2 14.0609 2 13V3H20ZM16 5H4V13C4 13.5304 4.21071 14.0391 4.58579 14.4142C4.96086 14.7893 5.46957 15 6 15H14C14.5304 15 15.0391 14.7893 15.4142 14.4142C15.7893 14.0391 16 13.5304 16 13V5Z"/>
-  </svg>
-);
-
-const TeapotIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 4C14.21 4 16 5.79 16 8H17C18.1 8 19 8.9 19 10V11C19 12.1 18.1 13 17 13H16V14C16 16.21 14.21 18 12 18H8C5.79 18 4 16.21 4 14V8C4 5.79 5.79 4 8 4H12ZM8 6C6.9 6 6 6.9 6 8V14C6 15.1 6.9 16 8 16H12C13.1 16 14 15.1 14 14V8C14 6.9 13.1 6 12 6H8ZM17 10H16V11H17V10ZM20 6V8H22V6H20ZM20 16H22V14H20V16ZM20 12H22V10H20V12Z"/>
-  </svg>
-);
-
-const SparkleIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2ZM19 13L19.74 16.26L23 17L19.74 17.74L19 21L18.26 17.74L15 17L18.26 16.26L19 13ZM5 17L5.74 19.26L8 20L5.74 20.74L5 23L4.26 20.74L2 20L4.26 19.26L5 17Z"/>
-  </svg>
-);
-
-const PhoneIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-  </svg>
-);
-
-const StarIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-  </svg>
-);
-
-const TargetIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"/>
-  </svg>
-);
-
-const TrophyIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18 2C18.5 2 19 2.5 19 3V7C19 9.21 17.21 11 15 11H14.65C14.2 12.72 12.73 14 11 14H10V16H13V22H7V16H10V14H9C7.27 14 5.8 12.72 5.35 11H5C2.79 11 1 9.21 1 7V3C1 2.5 1.5 2 2 2H6V0H14V2H18ZM6 4H3V7C3 8.1 3.9 9 5 9H6V4ZM14 9H6V4H14V9ZM17 4H14V9H15C16.1 9 17 8.1 17 7V4Z"/>
-  </svg>
-);
-
-const TieIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M6 2L8 4L6 6L8 9L12 22L16 9L18 6L16 4L18 2H6ZM9.88 4H14.12L13.12 5.5L14 7.2L12 14.1L10 7.2L10.88 5.5L9.88 4Z"/>
-  </svg>
-);
-
-const TrayIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 17H22V19H2V17ZM4 14H20C20.55 14 21 14.45 21 15V16H3V15C3 14.45 3.45 14 4 14ZM6.5 6C7.33 6 8 6.67 8 7.5C8 8.33 7.33 9 6.5 9C5.67 9 5 8.33 5 7.5C5 6.67 5.67 6 6.5 6ZM6.5 4C4.57 4 3 5.57 3 7.5C3 9.43 4.57 11 6.5 11C8.43 11 10 9.43 10 7.5C10 5.57 8.43 4 6.5 4ZM17.5 6C18.33 6 19 6.67 19 7.5C19 8.33 18.33 9 17.5 9C16.67 9 16 8.33 16 7.5C16 6.67 16.67 6 17.5 6ZM17.5 4C15.57 4 14 5.57 14 7.5C14 9.43 15.57 11 17.5 11C19.43 11 21 9.43 21 7.5C21 5.57 19.43 4 17.5 4ZM12 6C12.83 6 13.5 6.67 13.5 7.5C13.5 8.33 12.83 9 12 9C11.17 9 10.5 8.33 10.5 7.5C10.5 6.67 11.17 6 12 6ZM12 4C10.07 4 8.5 5.57 8.5 7.5C8.5 9.43 10.07 11 12 11C13.93 11 15.5 9.43 15.5 7.5C15.5 5.57 13.93 4 12 4Z"/>
-  </svg>
-);
-
-const WhatsAppIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-);
-
-const CheckIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-  </svg>
-);
-
-const ChevronDownIcon = ({ className = "w-6 h-6" }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-  </svg>
-);
-
-// Helper function to render icons by name
-const renderIcon = (iconName, className = "w-6 h-6") => {
-  const icons = {
-    coffee: <CoffeeIcon className={className} />,
-    teapot: <TeapotIcon className={className} />,
-    sparkle: <SparkleIcon className={className} />,
-    phone: <PhoneIcon className={className} />,
-    star: <StarIcon className={className} />,
-    target: <TargetIcon className={className} />,
-    trophy: <TrophyIcon className={className} />,
-    tie: <TieIcon className={className} />,
-    tray: <TrayIcon className={className} />,
-    whatsapp: <WhatsAppIcon className={className} />,
-    check: <CheckIcon className={className} />,
-    chevronDown: <ChevronDownIcon className={className} />,
-  };
-  return icons[iconName] || null;
-};
-
-export default function Home() {
-  const [isVisible, setIsVisible] = useState({});
-  const [scrolled, setScrolled] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Dynamic data from API
-  const [services, setServices] = useState([]);
-  const [features, setFeatures] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [drinks, setDrinks] = useState([]);
-  const [faqs, setFaqs] = useState([]);
-  const [sections, setSections] = useState({});
-
-  // Fetch data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_URL}/homepage`);
-        const data = await response.json();
-
-        if (data.success) {
-          // Set services
-          if (data.data.services && data.data.services.length > 0) {
-            setServices(data.data.services.map(s => ({
-              title: s.title,
-              desc: s.description,
-              icon: s.icon
-            })));
-          }
-
-          // Set features
-          if (data.data.features && data.data.features.length > 0) {
-            setFeatures(data.data.features.map(f => ({
-              icon: f.icon,
-              text: f.title
-            })));
-          }
-
-          // Set events
-          if (data.data.events && data.data.events.length > 0) {
-            setEvents(data.data.events.map(e => e.title));
-          }
-
-          // Set drinks
-          if (data.data.drinks && data.data.drinks.length > 0) {
-            // Group drinks by category
-            const drinksByCategory = {};
-            data.data.drinks.forEach(d => {
-              if (!drinksByCategory[d.category]) {
-                drinksByCategory[d.category] = [];
-              }
-              drinksByCategory[d.category].push(d.name);
-            });
-            setDrinks(Object.entries(drinksByCategory).map(([category, items]) => ({
-              category,
-              items
-            })));
-          }
-
-          // Set FAQs
-          if (data.data.faqs && data.data.faqs.length > 0) {
-            setFaqs(data.data.faqs.map(f => ({
-              q: f.question,
-              a: f.answer
-            })));
-          }
-
-          // Set sections content
-          if (data.data.sections) {
-            const sectionsMap = {};
-            data.data.sections.forEach(s => {
-              sectionsMap[s.section_key] = s.content;
-            });
-            setSections(sectionsMap);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching homepage data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+export default function HomePage() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setShowScrollTop(window.scrollY > 300);
     };
     window.addEventListener('scroll', handleScroll);
+
+    // Clear cache on mount
+    const version = '3.1.0';
+    const cachedVersion = localStorage.getItem('siteVersion');
+    if (cachedVersion !== version) {
+      localStorage.setItem('siteVersion', version);
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => caches.delete(name));
+        });
+      }
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    document.querySelectorAll('[data-animate]').forEach((el) => {
-      observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [loading]);
-
-  // Default/fallback data
-  const defaultServices = [
-    {
-      title: 'قهوجي وصباب الرياض للرجال',
-      desc: 'يتولى فريق قهوجي وصباب الرياض تقديم القهوة العربية الأصيلة بالطريقة التقليدية المعروفة. يحرص قهوجيين الرياض على انتقاء أجود أنواع البن الخولاني واليمني، مع إضافة الهيل والزعفران لنكهة لا تُنسى.',
-      icon: 'coffee'
-    },
-    {
-      title: 'صبابين قهوة الرياض',
-      desc: 'صبابين قهوة الرياض محترفون في فن صب القهوة وتقديمها للضيوف بأسلوب يعكس الأصالة والرقي. يلتزم فريق مباشرين قهوة بارتداء الزي السعودي التقليدي الأنيق من ثوب وغترة وعقال.',
-      icon: 'teapot'
-    },
-    {
-      title: 'صبابات قهوة وقهوجيات الرياض',
-      desc: 'نوفر صبابات قهوة وقهوجيات الرياض للحفلات والمناسبات النسائية. تتميز صبابات الرياض بالاحترافية والحشمة التامة في التعامل مع الضيفات الكريمات.',
-      icon: 'sparkle'
-    }
-  ];
-
-  const defaultFeatures = [
-    { icon: 'star', text: 'خبرة +20 عاماً في الضيافة' },
-    { icon: 'target', text: 'قهوجيين بالرياض مدربين' },
-    { icon: 'coffee', text: 'أجود أنواع البن الخولاني' },
-    { icon: 'trophy', text: 'فناجين كريستال فاخرة' },
-    { icon: 'tie', text: 'الزي التقليدي الأنيق' },
-    { icon: 'tray', text: 'صواني تقديم مذهبة' }
-  ];
-
-  const defaultEvents = [
-    'حفلات الزفاف والأعراس',
-    'مجالس العزاء',
-    'حفلات التخرج',
-    'المؤتمرات والاجتماعات الرسمية',
-    'الولائم والعزائم العائلية',
-    'المعارض والفعاليات'
-  ];
-
-  const defaultDrinks = [
-    {
-      category: 'القهوة بأنواعها',
-      items: ['القهوة العربية الأصيلة بالهيل والزعفران', 'القهوة التركية الفاخرة', 'الكابتشينو واللاتيه']
-    },
-    {
-      category: 'الشاي والأعشاب',
-      items: ['الشاي الأحمر والأخضر', 'شاي النعناع والليمون', 'الأعشاب الطبيعية المنوعة']
-    },
-    {
-      category: 'المشروبات الباردة',
-      items: ['العصائر الطبيعية الطازجة', 'المشروبات المثلجة المنعشة', 'الموهيتو والكوكتيلات']
-    }
-  ];
-
-  const defaultFaqs = [
-    { q: 'ما هي أسعار خدمات قهوجيين وصبابين بالرياض؟', a: 'تختلف الأسعار حسب نوع المناسبة وعدد الضيوف والخدمات المطلوبة. اتصل على رقم قهوجي بالرياض 0509702164 للحصول على عرض سعر مفصل من أرقام قهوجيين وصابين الرياض.' },
-    { q: 'هل تقدمون خدمة قهوجيات الرياض للمناسبات النسائية؟', a: 'نعم، نوفر قهوجيات الرياض وصبابات الرياض المحترفات للمناسبات النسائية. صبابات قهوة بالحشمة والاحترافية التامة.' },
-    { q: 'ما المناطق التي يغطيها قهوجيين الرياض؟', a: 'يغطي فريق قهوجي وصبابين بالرياض جميع أحياء ومناطق الرياض وضواحيها: شمال، جنوب، شرق، غرب الرياض. قهوجين وصبابين بالرياض في خدمتكم.' },
-    { q: 'كيف أحصل على أرقام قهوجيين في الرياض؟', a: 'يمكنك التواصل مباشرة على أرقام قهوجيين بالرياض 0509702164. نستقبل اتصالاتكم على مدار 24 ساعة للحصول على أرقام قهوجين وترتيب موعد المناسبة.' }
-  ];
-
-  // Use API data or fallback to defaults
-  const displayServices = services.length > 0 ? services : defaultServices;
-  const displayFeatures = features.length > 0 ? features : defaultFeatures;
-  const displayEvents = events.length > 0 ? events : defaultEvents;
-  const displayDrinks = drinks.length > 0 ? drinks : defaultDrinks;
-  const displayFaqs = faqs.length > 0 ? faqs : defaultFaqs;
-
-  // Get section content or use defaults
-  const getSection = (key, defaultContent) => {
-    return sections[key] || defaultContent;
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const steps = getSection('steps', {
-    items: [
-      { num: '01', title: 'اتصل بنا', desc: 'تواصل على رقم قهوجي بالرياض 0509702164' },
-      { num: '02', title: 'حدد التفاصيل', desc: 'نوع المناسبة وعدد الضيوف' },
-      { num: '03', title: 'اختر الخدمات', desc: 'قهوجي وصبابين قهوة بالرياض' },
-      { num: '04', title: 'استمتع', desc: 'قهوجيين وصبابين الرياض في خدمتكم' }
-    ]
-  }).items || [
-    { num: '01', title: 'اتصل بنا', desc: 'تواصل على رقم قهوجي بالرياض 0509702164' },
-    { num: '02', title: 'حدد التفاصيل', desc: 'نوع المناسبة وعدد الضيوف' },
-    { num: '03', title: 'اختر الخدمات', desc: 'قهوجي وصبابين قهوة بالرياض' },
-    { num: '04', title: 'استمتع', desc: 'قهوجيين وصبابين الرياض في خدمتكم' }
-  ];
-
-  const whyUsFeatures = getSection('whyus', {
-    features: [
-      'قهوجي وصبابين بالرياض مدربين على أعلى مستوى من الاحترافية',
-      'أجود أنواع القهوة العربية والبن الخولاني والبرازيلي',
-      'قهوجي وصبابين قهوة بالرياض يقدمون الشاي بأنواعه والمشروبات الساخنة',
-      'فناجين وأطقم صيني وكريستال فاخرة',
-      'صواني تقديم مذهبة ومرصعة',
-      'مباشرين قهوة الرياض بالزي التقليدي الأنيق'
-    ]
-  }).features || [
-    'قهوجي وصبابين بالرياض مدربين على أعلى مستوى من الاحترافية',
-    'أجود أنواع القهوة العربية والبن الخولاني والبرازيلي',
-    'قهوجي وصبابين قهوة بالرياض يقدمون الشاي بأنواعه والمشروبات الساخنة',
-    'فناجين وأطقم صيني وكريستال فاخرة',
-    'صواني تقديم مذهبة ومرصعة',
-    'مباشرين قهوة الرياض بالزي التقليدي الأنيق'
-  ];
-
-  const hostServices = getSection('host', {
-    services: [
-      'استقبال الضيوف بأسلوب راقٍ',
-      'تقديم القهوة العربية والشاي والعصائر',
-      'الإشراف على فريق قهوجيين وصبابين بالرياض',
-      'التنسيق مع صاحب المناسبة لضمان رضا الضيوف'
-    ]
-  }).services || [
-    'استقبال الضيوف بأسلوب راقٍ',
-    'تقديم القهوة العربية والشاي والعصائر',
-    'الإشراف على فريق قهوجيين وصبابين بالرياض',
-    'التنسيق مع صاحب المناسبة لضمان رضا الضيوف'
-  ];
-
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* Header - Purple Background */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white shadow-xl py-2' : 'bg-[#8305A5] py-3'}`}
-        role="banner"
-      >
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl" aria-label="التنقل الرئيسي">
-          <div className="flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2 sm:gap-3" aria-label="الصفحة الرئيسية - قهوجي الرياض">
+    <div className="min-h-screen bg-cream-bg text-text-main antialiased flex flex-col selection:bg-gold selection:text-white font-main">
+      {/* Header */}
+      <header className="bg-cream-bg/95 backdrop-blur-md sticky top-0 z-50 border-b border-gold/20 shadow-sm">
+        <div className="container mx-auto px-6 md:px-12 lg:px-16 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 relative overflow-hidden">
               <Image
-                src="/images/logo.webp"
-                alt="قهوجي الرياض - شعار"
-                width={80}
-                height={80}
-                className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
+                src="/images/logo-new-one.webp"
+                alt="نخوة القهوة"
+                fill
+                className="object-contain"
                 priority
+                style={{ background: 'transparent' }}
               />
-              <div>
-                <span className={`text-base sm:text-lg md:text-xl font-bold transition-colors ${scrolled ? 'text-[#8305A5]' : 'text-white'}`}>
-                  قهوجي الرياض
-                </span>
-                <p className={`text-[10px] sm:text-xs md:text-sm transition-colors ${scrolled ? 'text-[#666666]' : 'text-white/80'}`}>
-                  قهوجيين وصبابين الرياض
-                </p>
-              </div>
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-coffee-dark tracking-wide font-sans">نخوة القهوة</h1>
+              <div className="h-0.5 w-12 bg-gold mt-1 mb-1"></div>
+              <span className="text-xs text-bronze font-bold uppercase tracking-widest">ضيافة ملكية فاخرة</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              className="hidden md:flex items-center gap-2 text-coffee-dark font-bold hover:text-gold transition-colors text-lg"
+              href="#services"
+            >
+              خدماتنا
             </a>
             <a
-              href="tel:0509702164"
-              className={`group flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8305A5] ${
-                scrolled
-                  ? 'bg-[#8305A5] text-white shadow-lg'
-                  : 'bg-white text-[#8305A5] shadow-lg'
-              }`}
-              aria-label="اتصل للحجز: 0509702164"
+              className="hidden md:flex items-center gap-2 bg-coffee-dark text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-gold transition-all duration-300 border border-transparent hover:border-coffee-dark/20 hover:scale-105 transform"
+              href="tel:0532637955"
+              aria-label="اتصل بنا على 0532637955"
             >
-              <span className="hidden sm:inline">احجز الآن</span>
-              <PhoneIcon className="w-4 h-4 group-hover:animate-bounce" aria-hidden="true" />
-              <span className="font-bold">0509702164</span>
+              <span className="material-symbols-outlined text-sm">call</span>
+              <span>0532637955</span>
+            </a>
+            <a
+              className="md:hidden text-coffee-dark border-2 border-coffee-dark/30 p-3 rounded-full flex items-center justify-center hover:bg-coffee-dark hover:text-white transition-all duration-300 hover:scale-110 transform"
+              href="tel:0532637955"
+              aria-label="اتصل بنا"
+            >
+              <span className="material-symbols-outlined">call</span>
             </a>
           </div>
-        </nav>
+        </div>
       </header>
 
-      {/* Hero Section - White Background */}
-      <section className="relative flex items-center justify-center overflow-hidden bg-white pt-24 sm:pt-28 pb-8 sm:pb-12" aria-labelledby="hero-title">
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-[#8305A5]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6" role="status" aria-live="polite">
-              <span className="w-1.5 h-1.5 bg-[#F17405] rounded-full animate-pulse" aria-hidden="true"></span>
-              <span className="text-[#8305A5] text-xs sm:text-sm font-semibold">أفضل قهوجي بالرياض - قهوجيين وصبابين</span>
-            </div>
-
-            <h1 id="hero-title" className="text-3xl sm:text-4xl md:text-5xl font-black text-[#8305A5] mb-3 sm:mb-4 leading-tight">
-              قهوجي الرياض
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-[#F17405] mb-4 sm:mb-6">
-              قهوجيين وصبابين الرياض
-            </p>
-
-            <p className="text-sm sm:text-base text-[#666666] max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
-              نقدم خدمات <strong className="text-[#8305A5]">قهوجي وصبابين الرياض</strong> على أعلى مستوى من الاحترافية والجودة.
-              يضم فريقنا نخبة من <strong className="text-[#8305A5]">قهوجيين وصبابين بالرياض</strong> المدربين على فنون الضيافة العربية الأصيلة.
-              <br className="hidden sm:block" />
-              <span className="text-[#F17405] font-semibold">خبرة تزيد عن 20 عاماً</span>
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center px-4">
-              <a
-                href="tel:0509702164"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8305A5] hover:bg-[#6a0485] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8305A5]"
-                aria-label="اتصل الآن على الرقم 0509702164"
-              >
-                <PhoneIcon className="w-5 h-5 group-hover:animate-bounce" aria-hidden="true" />
-                <span>اتصل الآن: 0509702164</span>
-              </a>
-              <a
-                href="https://wa.me/966509702164"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent border-2 border-[#8305A5] text-[#8305A5] hover:bg-[#8305A5] hover:text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8305A5]"
-                aria-label="تواصل معنا عبر واتساب"
-              >
-                <WhatsAppIcon className="w-5 h-5" aria-hidden="true" />
-                <span>واتساب</span>
-              </a>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-xl mx-auto mt-10 sm:mt-12 px-4">
-              {[
-                { num: '+20', label: 'سنة خبرة' },
-                { num: '+5000', label: 'مناسبة' },
-                { num: '+50', label: 'قهوجي محترف' }
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#F17405]">{stat.num}</div>
-                  <div className="text-[#666666] text-[10px] sm:text-xs mt-1">{stat.label}</div>
-                </div>
-              ))}
+      {/* Main Content */}
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <div className="relative min-h-[650px] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              alt="قهوجي الرياض - صباب محترف يقدم القهوة العربية الأصيلة في مناسبة فاخرة"
+              src="/images/3.webp"
+              fill
+              className="object-cover scale-105"
+              priority
+            />
+          </div>
+          <div className="container mx-auto px-6 md:px-12 lg:px-16 relative z-10 py-20">
+            <div className="max-w-4xl mx-auto md:mx-0 md:mr-auto text-right text-white space-y-8 pl-0 md:pl-20">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/40 rounded-sm px-4 py-1.5 mb-2">
+                <span className="material-symbols-outlined text-white text-sm">star</span>
+                <span className="text-white font-bold text-sm tracking-wide">الخيار الأول للضيافة في الرياض</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight font-sans text-white" style={{ textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5)' }}>
+                قهوجي <span className="text-white" style={{ textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5)' }}>الرياض</span>
+                <span className="block text-2xl md:text-3xl lg:text-4xl mt-4 font-bold text-white" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>فخامة الضيافة العربية الأصيلة</span>
+              </h1>
+              <p className="text-lg md:text-xl font-medium text-white max-w-2xl leading-relaxed border-r-4 border-white pr-6 font-sans" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9)' }}>
+                نقدم لكم أرقى خدمات القهوة والشاي بلمسة تراثية فاخرة تليق بضيوفكم ومناسباتكم الكبرى.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-5 pt-4">
+                <a
+                  className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-black text-xl shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 group hover:scale-105 transform"
+                  href="tel:0532637955"
+                  style={{ boxShadow: '0 10px 40px rgba(183,66,167,0.4)' }}
+                  aria-label="اطلب خدمة القهوجيين الآن - اتصل على 0532637955"
+                >
+                  <span className="material-symbols-outlined group-hover:rotate-12 transition-transform text-2xl">coffee_maker</span>
+                  اطلب الخدمة الآن
+                </a>
+                <a
+                  className="bg-white/10 backdrop-blur-md border-2 border-white hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform"
+                  href="#about"
+                  style={{ boxShadow: '0 10px 30px rgba(255,255,255,0.2)' }}
+                  aria-label="اكتشف المزيد عن خدماتنا"
+                >
+                  اكتشف المزيد
+                </a>
+              </div>
             </div>
           </div>
+          <div className="absolute bottom-0 left-0 w-full h-16 bg-cream-bg" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 0, 0 100%)' }}></div>
         </div>
-      </section>
 
-      {/* About Section - من نحن */}
-      <section id="about" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className={`transition-all duration-1000 ${isVisible.about ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                من نحن
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                أفضل قهوجي بالرياض
-              </h2>
-              <p className="text-sm sm:text-base text-[#666666] max-w-3xl mx-auto leading-relaxed">
-                نحن نقدم خدمات <strong className="text-[#8305A5]">قهوجي وصبابين الرياض</strong> على أعلى مستوى من الاحترافية والجودة.
-                يضم فريقنا نخبة من <strong className="text-[#8305A5]">قهوجيين وصبابين بالرياض</strong> المدربين على فنون الضيافة العربية الأصيلة،
-                والذين يتميزون بالخبرة الواسعة في التعامل مع جميع أنواع المناسبات.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-              {displayFeatures.map((feature, i) => (
-                <div
-                  key={i}
-                  className="group bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 border-[#8305A5]/10 hover:border-[#8305A5] transition-all duration-500 transform hover:-translate-y-1 text-center"
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 bg-[#8305A5] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 text-white">
-                    {renderIcon(feature.icon, "w-5 h-5 sm:w-6 sm:h-6")}
+        {/* About Section */}
+        <section className="py-20 relative bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]" id="about">
+          <div className="container mx-auto px-6 md:px-12 lg:px-16">
+            <div className="flex flex-col lg:flex-row items-center gap-16">
+              <div className="lg:w-5/12 relative group">
+                <div className="absolute -inset-4 bg-gradient-to-tr from-gold to-coffee-dark rounded-xl opacity-20 rotate-3 group-hover:rotate-6 transition-transform duration-500"></div>
+                <div className="relative bg-white p-10 rounded-lg shadow-xl border border-gold/10 text-center h-full flex flex-col items-center justify-center min-h-[400px]">
+                  <div className="octagon-border w-36 h-36 mb-6 mx-auto">
+                    <Image
+                      src="/images/1.webp"
+                      alt="دلة القهوة العربية التقليدية - رمز الأصالة والضيافة السعودية"
+                      width={144}
+                      height={144}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                    />
                   </div>
-                  <p className="text-[#333333] font-medium text-[10px] sm:text-xs">{feature.text}</p>
+                  <h3 className="text-3xl font-black text-coffee-dark mb-2">الأصالة</h3>
+                  <div className="w-16 h-1 bg-gold mb-6"></div>
+                  <p className="text-text-muted text-lg leading-relaxed">
+                    نعتز بتقديم القهوة السعودية وفق تقاليدها العريقة، حيث يلتقي كرم الضيافة بجودة التقديم.
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+              </div>
 
-      {/* Why Us Section - لماذا نحن أفضل قهوجي في الرياض */}
-      <section id="why-us" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#8305A5] relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative">
-          <div className={`transition-all duration-1000 ${isVisible['why-us'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                لماذا نحن
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
-                لماذا نحن <span className="text-[#F17405]">أفضل قهوجي في الرياض</span>؟
-              </h2>
-              <p className="text-sm sm:text-base text-white/90 max-w-3xl mx-auto leading-relaxed">
-                عندما تبحث عن <strong className="text-[#F17405]">قهوجي وصبابين</strong> محترفين، ستجد لدينا كل ما يلزم لإنجاح مناسبتك.
-                فنحن نوفر <strong className="text-[#F17405]">قهوجين</strong> ذوي خبرة تزيد عن 20 عاماً في مجال الضيافة.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {whyUsFeatures.map((feature, i) => (
-                <div
-                  key={i}
-                  className="group bg-white p-4 rounded-xl text-center hover:bg-[#F17405] transition-all duration-500 transform hover:-translate-y-1 shadow-md"
-                >
-                  <div className="w-8 h-8 mx-auto mb-2 bg-[#8305A5] group-hover:bg-white rounded-full flex items-center justify-center">
-                    <CheckIcon className="w-4 h-4 text-white group-hover:text-[#8305A5]" />
-                  </div>
-                  <p className="font-medium text-xs sm:text-sm text-[#8305A5] group-hover:text-white">{feature}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA inside */}
-            <div className="mt-8 text-center">
-              <p className="text-white/80 text-sm mb-3">للتواصل والحجز مع <strong className="text-[#F17405]">قهوجي الرياض قهوجيين وصبابين</strong></p>
-              <a
-                href="tel:0509702164"
-                className="inline-flex items-center gap-2 bg-white text-[#8305A5] px-6 py-3 rounded-xl font-bold text-base transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                <PhoneIcon className="w-5 h-5" />
-                <span>0509702164</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section - خدمات قهوجيين وصبابين الرياض */}
-      <section id="services" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#f8f8f8]">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className={`transition-all duration-1000 ${isVisible.services ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-[#F17405]/10 text-[#F17405] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                خدماتنا
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                خدمات قهوجيين وصبابين الرياض
-              </h2>
-              <p className="text-sm sm:text-base text-[#666666] max-w-2xl mx-auto">
-                نقدم أفضل خدمات <strong className="text-[#8305A5]">قهوجي وصبابين بالرياض</strong> لجميع المناسبات
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
-              {displayServices.map((service, i) => (
-                <div
-                  key={i}
-                  className="group relative bg-white p-5 sm:p-6 rounded-2xl border-2 border-[#8305A5]/10 hover:border-[#8305A5] transition-all duration-500 hover:shadow-xl overflow-hidden"
-                >
-                  <div className="relative">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#8305A5] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 text-white">
-                      {renderIcon(service.icon, "w-6 h-6 sm:w-7 sm:h-7")}
-                    </div>
-                    <h3 className="text-base sm:text-lg font-bold text-[#8305A5] mb-2">{service.title}</h3>
-                    <p className="text-[#666666] leading-relaxed text-xs sm:text-sm">{service.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Phone Numbers Section - أرقام قهوجيين وصبابين بالرياض */}
-      <section id="contact-numbers" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#F17405] relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative">
-          <div className={`transition-all duration-1000 ${isVisible['contact-numbers'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4">
-              <span className="inline-block bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                تواصل معنا
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
-                أرقام قهوجيين وصبابين بالرياض
-              </h2>
-              <p className="text-sm sm:text-base text-white/90 max-w-3xl mx-auto leading-relaxed">
-                هل تبحث عن <strong className="text-white">أرقام قهوجين</strong> موثوقة؟ نحن نوفر لك <strong className="text-white">أرقام قهوجيين وصابين الرياض</strong> للتواصل المباشر والحجز الفوري.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto text-center shadow-xl">
-              <p className="text-[#8305A5] font-semibold text-sm mb-3">للحجز الفوري من أرقام قهوجيين في الرياض</p>
-              <a
-                href="tel:0509702164"
-                className="inline-flex items-center gap-3 bg-[#8305A5] text-white px-6 py-4 rounded-xl font-bold text-xl sm:text-2xl transition-all duration-300 transform hover:scale-105 shadow-lg mb-4"
-              >
-                <PhoneIcon className="w-6 h-6 animate-bounce" />
-                <span>0509702164</span>
-              </a>
-              <p className="text-[#666666] text-xs sm:text-sm">
-                نستقبل اتصالاتكم على مدار <strong className="text-[#F17405]">24 ساعة</strong> لترتيب موعد المناسبة.
-              </p>
-              <a
-                href="https://wa.me/966509702164"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-xl font-semibold text-sm mt-4 transition-all duration-300 transform hover:scale-105"
-              >
-                <WhatsAppIcon className="w-5 h-5" />
-                <span>تواصل واتساب</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Events Section - قهوجي صبابين الرياض للمناسبات */}
-      <section id="events" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#8305A5] relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative">
-          <div className={`transition-all duration-1000 ${isVisible.events ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                المناسبات
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
-                قهوجي صبابين الرياض <span className="text-[#F17405]">للمناسبات المختلفة</span>
-              </h2>
-              <p className="text-sm sm:text-base text-white/90 max-w-2xl mx-auto">
-                يقدم <strong className="text-[#F17405]">قهوجي صبابين الرياض</strong> خدماتهم في جميع المناسبات
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-              {displayEvents.map((event, i) => (
-                <div
-                  key={i}
-                  className="group bg-white p-4 sm:p-5 rounded-xl sm:rounded-2xl text-center hover:bg-[#F17405] transition-all duration-500 transform hover:-translate-y-1 shadow-md"
-                >
-                  <p className="font-medium text-xs sm:text-sm text-[#8305A5] group-hover:text-white">{event}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Host Service - مضيف قهوة بالرياض */}
-      <section id="host" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className={`transition-all duration-1000 ${isVisible.host ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              <div>
-                <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-3">
-                  خدمة متكاملة
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                  مضيف قهوة بالرياض
+              <div className="lg:w-7/12">
+                <span className="text-bronze font-bold text-sm uppercase tracking-wider mb-2 block font-sans">مؤسسة نخوة القهوة</span>
+                <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-6 leading-tight font-sans">
+                  من نحن – رواد الضيافة<br />
+                  <span className="text-coffee-dark relative inline-block">
+                    في المملكة
+                    <svg className="absolute w-full h-3 -bottom-1 right-0 text-coffee-dark/20" preserveAspectRatio="none" viewBox="0 0 100 10">
+                      <path d="M0 5 Q 50 10 100 5" fill="none" stroke="currentColor" strokeWidth="3"></path>
+                    </svg>
+                  </span>
                 </h2>
-                <p className="text-sm sm:text-base text-[#666666] mb-6 leading-relaxed">
-                  نفخر بتقديم خدمة <strong className="text-[#8305A5]">مضيف قهوة بالرياض</strong> الشاملة التي تتضمن الإشراف الكامل على الضيافة من البداية حتى النهاية.
-                </p>
-                <h3 className="text-base sm:text-lg font-bold text-[#8305A5] mb-3">ما يقدمه مضيف القهوة:</h3>
-                <ul className="space-y-2">
-                  {hostServices.map((service, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <span className="w-6 h-6 bg-[#8305A5] rounded-full flex items-center justify-center flex-shrink-0">
-                        <CheckIcon className="w-3 h-3 text-white" />
-                      </span>
-                      <span className="text-[#333333] text-xs sm:text-sm">{service}</span>
-                    </li>
-                  ))}
+                <div className="space-y-6 text-sm md:text-base text-text-muted leading-relaxed font-normal text-justify font-sans">
+                  <p>
+                    نحن مؤسسة رائدة في مجال الضيافة بالرياض، نجمع بين عراقة الماضي وأناقة الحاضر. "نخوة القهوة" ليست مجرد اسم، بل هي وعد بتقديم تجربة ضيافة ملكية تليق بمقام ضيوفكم.
+                  </p>
+                  <p>
+                    نفخر بامتلاكنا فريقاً من أمهر القهوجيين والصبابين السعوديين المدربين على أعلى مستويات الإتيكيت والاحترافية. هدفنا الأسمى هو راحة ضيوفكم وتميز مناسبتكم بلمسات فنية في التقديم.
+                  </p>
+                </div>
+                <div className="mt-10 grid grid-cols-2 gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="octagon-border w-20 h-20 flex-shrink-0">
+                      <Image
+                        src="/images/2.webp"
+                        alt="صباب محترف يرتدي الزي السعودي التقليدي"
+                        width={80}
+                        height={80}
+                        className="object-cover w-full h-full"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-coffee-dark text-xl">طاقم محترف</h4>
+                      <p className="text-sm text-text-muted">مدرب على أعلى مستوى</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="octagon-border w-20 h-20 flex-shrink-0">
+                      <Image
+                        src="/images/6.webp"
+                        alt="القهوة العربية الأصيلة بالطريقة التقليدية"
+                        width={80}
+                        height={80}
+                        className="object-cover w-full h-full"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-coffee-dark text-xl">تراث أصيل</h4>
+                      <p className="text-sm text-text-muted">التزام بالتقاليد السعودية</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Us Section */}
+        <section className="py-24 bg-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-cream-bg/50 skew-x-12 transform origin-top-right"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-16 max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-6 font-sans">لماذا قهوجي الرياض عنصر أساسي لنجاح مناسبتك؟</h2>
+              <div className="w-24 h-1.5 bg-gradient-to-r from-coffee-dark via-gold to-coffee-dark mx-auto rounded-full mb-6"></div>
+              <p className="text-base text-text-muted font-normal font-sans">الضيافة هي واجهة المضيف، ونحن هنا لنجعل واجهتكم مشرفة بأعلى معايير الجودة.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 mb-20">
+              <div className="bg-cream-bg hover:bg-white p-8 rounded-sm shadow-lg border-t-4 border-gold hover:shadow-golden transition-all duration-300 group">
+                <div className="octagon-border w-24 h-24 mb-6 mx-auto group-hover:scale-110 transition-transform">
+                  <Image
+                    src="/images/2.webp"
+                    alt="قهوجي محترف يستقبل الضيوف بابتسامة ترحيبية"
+                    width={96}
+                    height={96}
+                    className="object-cover w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-coffee-dark mb-3 font-sans">انطباع أول مذهل</h3>
+                <p className="text-text-muted text-sm leading-relaxed font-sans">نضمن لك استقبالاً حاراً وراقياً يترك أثراً طيباً في نفوس الحضور من اللحظة الأولى لدخولهم.</p>
+              </div>
+              <div className="bg-coffee-dark text-white p-8 rounded-sm shadow-xl border-t-4 border-white transform md:-translate-y-4 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-full -mr-10 -mt-10"></div>
+                <div className="octagon-border w-24 h-24 mb-6 mx-auto relative">
+                  <Image
+                    src="/images/4.webp"
+                    alt="صباب يقدم خدمة احترافية لراحة المضيف"
+                    width={96}
+                    height={96}
+                    className="object-cover w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 font-sans">راحة المضيف</h3>
+                <p className="text-white/90 text-sm leading-relaxed font-sans">تفرغ لاستقبال ضيوفك والحديث معهم، واترك أعباء الصب والتقديم والضيافة علينا بالكامل.</p>
+              </div>
+              <div className="bg-cream-bg hover:bg-white p-8 rounded-sm shadow-lg border-t-4 border-gold hover:shadow-golden transition-all duration-300 group">
+                <div className="octagon-border w-24 h-24 mb-6 mx-auto group-hover:scale-110 transition-transform">
+                  <Image
+                    src="/images/5.webp"
+                    alt="تقديم القهوة العربية بالطريقة التقليدية الأصيلة"
+                    width={96}
+                    height={96}
+                    className="object-cover w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-coffee-dark mb-3 font-sans">إحياء التراث</h3>
+                <p className="text-text-muted text-sm leading-relaxed font-sans">نقدم القهوة العربية بالطريقة التقليدية الأصيلة التي تعبر عن كرم الضيافة السعودية المتوارثة.</p>
+              </div>
+            </div>
+
+            {/* Quality Guarantee Section */}
+            <div className="max-w-5xl mx-auto bg-gradient-to-r from-coffee-dark to-text-main rounded-2xl p-1 shadow-2xl overflow-hidden">
+              <div className="bg-white/95 backdrop-blur-xl rounded-[14px] p-8 md:p-12 h-full relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCODg2MEIiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTUwIDUwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMHMtMTAtNC40NzctMTAtMTAgNC40NzctMTAgMTAtMTB6TTEwIDEwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMFMwIDI1LjUyMyAwIDIwczQuNDc3LTEwIDEwLTEwem0xMCA4YzQuNDE4IDAgOC0zLjU4MiA4LThzLTMuNTgyLTgtOC04LTggMy41ODItOCA4IDMuNTgyIDggOCA4em00MCA0MGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHoiIC8+PC9nPjwvZz48L3N2Zz4=')] opacity-[0.03] z-0"></div>
+                <div className="relative z-10 flex flex-col md:flex-row gap-12 items-center">
+                  <div className="md:w-1/2 text-right">
+                    <h2 className="text-xl md:text-2xl font-black text-coffee-dark mb-6 font-sans">خدمة قهوجيين بالرياض تضمن لك:</h2>
+                    <p className="text-sm md:text-base text-text-muted mb-8 leading-relaxed border-r-4 border-coffee-dark pr-4 font-sans">معاييرنا لا تقبل القسمة على اثنين، الجودة لدينا التزام وليست خياراً.</p>
+                    <a className="inline-flex items-center gap-3 bg-coffee-dark text-white px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-coffee-dark transition-all duration-300 shadow-lg hover:scale-105 transform" href="tel:0532637955" aria-label="احجز موعدك الآن - اتصل على 0532637955">
+                      <span className="material-symbols-outlined">call</span>
+                      احجز موعدك الآن
+                    </a>
+                  </div>
+                  <div className="md:w-1/2 grid grid-cols-1 gap-4">
+                    <div className="flex items-center gap-4 bg-cream-bg p-4 rounded-lg border border-gold/20 hover:border-gold transition-colors">
+                      <div className="octagon w-12 h-12 flex-shrink-0">
+                        <Image
+                          src="/images/1.webp"
+                          alt="حبوب البن الفاخرة - خولاني وهرري"
+                          width={48}
+                          height={48}
+                          className="object-cover w-full h-full"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-base font-bold text-coffee-dark">قهوة فاخرة (خولاني، هرري)</span>
+                    </div>
+                    <div className="flex items-center gap-4 bg-cream-bg p-4 rounded-lg border border-gold/20 hover:border-gold transition-colors">
+                      <div className="octagon w-12 h-12 flex-shrink-0">
+                        <Image
+                          src="/images/2.webp"
+                          alt="معايير النظافة والتعقيم العالية"
+                          width={48}
+                          height={48}
+                          className="object-cover w-full h-full"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-base font-bold text-coffee-dark">نظافة تامة وتعقيم شامل</span>
+                    </div>
+                    <div className="flex items-center gap-4 bg-cream-bg p-4 rounded-lg border border-gold/20 hover:border-gold transition-colors">
+                      <div className="octagon w-12 h-12 flex-shrink-0">
+                        <Image
+                          src="/images/4.webp"
+                          alt="الالتزام بالمواعيد والزي الموحد"
+                          width={48}
+                          height={48}
+                          className="object-cover w-full h-full"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-base font-bold text-coffee-dark">التزام صارم بالمواعيد والزي</span>
+                    </div>
+                    <div className="flex items-center gap-4 bg-cream-bg p-4 rounded-lg border border-gold/20 hover:border-gold transition-colors">
+                      <div className="octagon w-12 h-12 flex-shrink-0">
+                        <Image
+                          src="/images/5.webp"
+                          alt="أسعار تنافسية وشفافة"
+                          width={48}
+                          height={48}
+                          className="object-cover w-full h-full"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-base font-bold text-coffee-dark">أسعار تنافسية وشفافة</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Professionalism Section */}
+        <section className="py-20 bg-coffee-dark relative text-white">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCODg2MEIiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTUwIDUwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMHMtMTAtNC40NzctMTAtMTAgNC40NzctMTAgMTAtMTB6TTEwIDEwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMFMwIDI1LjUyMyAwIDIwczQuNDc3LTEwIDEwLTEwem0xMCA4YzQuNDE4IDAgOC0zLjU4MiA4LThzLTMuNTgyLTgtOC04LTggMy41ODItOCA4IDMuNTgyIDggOCA4em00MCA0MGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHoiIC8+PC9nPjwvZz48L3N2Zz4=')] opacity-[0.03]"></div>
+          <div className="container mx-auto px-4 max-w-5xl text-center space-y-8 relative z-10">
+            <span className="text-white font-bold tracking-widest uppercase text-xs border-2 border-white px-4 py-1 rounded-full font-sans">التميز شعارنا</span>
+            <h2 className="text-2xl md:text-3xl font-black font-sans text-white">احترافية لا تقبل المساومة</h2>
+            <p className="text-base md:text-lg text-white leading-relaxed font-normal max-w-4xl mx-auto font-sans">
+              فريقنا ليس مجرد مقدمي خدمة، بل هم <span className="text-white font-black">سفراء للضيافة</span>. يتم اختيارهم بعناية فائقة وتدريبهم على فن الإتيكيت، وحسن المظهر، واللباقة في الحديث. يرتدون الزي السعودي الرسمي (الثوب، الشماغ، والدقلة الفاخرة) ليعكسوا أصالة المكان وهيبة المناسبة.
+            </p>
+            <div className="flex justify-center gap-4 mt-8 opacity-70">
+              <span className="material-symbols-outlined text-5xl">person_apron</span>
+              <span className="material-symbols-outlined text-5xl">coffee</span>
+              <span className="material-symbols-outlined text-5xl">groups</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section className="py-24 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]" id="services">
+          <div className="container mx-auto px-6 md:px-12 lg:px-16">
+            <div className="text-center mb-16">
+              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-4 font-sans">لجميع أنواع المناسبات</h2>
+              <p className="text-text-muted text-sm md:text-base font-normal font-sans">نكيف خدماتنا لتناسب طبيعة وخصوصية مناسبتكم</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
+                <div className="absolute inset-0 bg-coffee-dark transition-colors duration-500 group-hover:bg-gold flex flex-col items-center justify-center p-6 text-center z-10">
+                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <Image
+                      src="/images/3.webp"
+                      alt="خدمات قهوجيين لحفلات الزفاف والملكة"
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">حفلات الزفاف والملكة</h3>
+                  <div className="w-12 h-1 bg-gold group-hover:bg-white transition-colors"></div>
+                </div>
+              </div>
+              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
+                <div className="absolute inset-0 bg-white transition-colors duration-500 group-hover:bg-coffee-dark flex flex-col items-center justify-center p-6 text-center z-10">
+                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <Image
+                      src="/images/4.webp"
+                      alt="خدمات ضيافة للمؤتمرات والفعاليات الرسمية"
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-coffee-dark group-hover:text-white mb-2 transition-colors">المؤتمرات الرسمية</h3>
+                  <div className="w-12 h-1 bg-coffee-dark group-hover:bg-gold transition-colors"></div>
+                </div>
+              </div>
+              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
+                <div className="absolute inset-0 bg-coffee-dark transition-colors duration-500 group-hover:bg-gold flex flex-col items-center justify-center p-6 text-center z-10">
+                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <Image
+                      src="/images/5.webp"
+                      alt="صبابين محترفين للعزائم والولائم"
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">العزائم والولائم</h3>
+                  <div className="w-12 h-1 bg-gold group-hover:bg-white transition-colors"></div>
+                </div>
+              </div>
+              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
+                <div className="absolute inset-0 bg-white transition-colors duration-500 group-hover:bg-coffee-dark flex flex-col items-center justify-center p-6 text-center z-10">
+                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
+                    <Image
+                      src="/images/6.webp"
+                      alt="خدمات قهوجيين لبيوت العزاء"
+                      width={128}
+                      height={128}
+                      className="object-cover w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-coffee-dark group-hover:text-white mb-2 transition-colors">بيوت العزاء</h3>
+                  <div className="w-12 h-1 bg-coffee-dark group-hover:bg-gold transition-colors"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Best Coffee Section */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="flex flex-col md:flex-row gap-12 items-center mb-20">
+              <div className="md:w-1/2 space-y-8">
+                <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-8 font-sans">أفضل قهوجي بالرياض <br /><span className="text-coffee-dark text-xl">لماذا نحن؟</span></h2>
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-sm bg-coffee-dark flex items-center justify-center shrink-0 text-white font-bold text-lg shadow-lg rotate-3">1</div>
+                    <div>
+                      <h4 className="text-lg font-bold text-coffee-dark mb-1 font-sans">الخبرة الطويلة</h4>
+                      <p className="text-text-muted text-sm font-sans">سنوات من العمل في قصور الرياض وقاعاتها الكبرى.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-sm bg-coffee-dark flex items-center justify-center shrink-0 text-white font-bold text-lg shadow-lg -rotate-2">2</div>
+                    <div>
+                      <h4 className="text-lg font-bold text-coffee-dark mb-1 font-sans">سرعة البديهة</h4>
+                      <p className="text-text-muted text-sm font-sans">فريقنا يفهم إشارة المضيف ويلبي الطلبات فوراً.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-sm bg-coffee-dark flex items-center justify-center shrink-0 text-white font-bold text-lg shadow-lg rotate-1">3</div>
+                    <div>
+                      <h4 className="text-lg font-bold text-coffee-dark mb-1 font-sans">تغطية شاملة</h4>
+                      <p className="text-text-muted text-sm font-sans">مهما كان عدد الضيوف، لدينا العدد الكافي من الصبابين.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="md:w-1/2 relative">
+                <div className="absolute inset-0 bg-coffee-dark/10 transform rotate-6 rounded-3xl"></div>
+                <div className="bg-coffee-dark p-8 md:p-12 rounded-3xl shadow-2xl relative text-center text-white border-2 border-white/30">
+                  <span className="material-symbols-outlined text-7xl text-white mb-4">award_star</span>
+                  <h3 className="text-xl md:text-2xl font-black mb-2 font-sans text-white">نضمن لكم "بيض الوجه"</h3>
+                  <p className="text-white text-sm mb-8 font-sans">سمعتكم هي أمانة في أعناقنا</p>
+                  <div className="flex justify-center gap-2">
+                    <span className="material-symbols-outlined text-white">star</span>
+                    <span className="material-symbols-outlined text-white">star</span>
+                    <span className="material-symbols-outlined text-white">star</span>
+                    <span className="material-symbols-outlined text-white">star</span>
+                    <span className="material-symbols-outlined text-white">star</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-cream-bg border border-gold/10 rounded-xl p-8 shadow-sm hover:shadow-golden transition-shadow duration-300 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-right">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shrink-0 border-2 border-gold/20 text-coffee-dark">
+                  <span className="material-symbols-outlined text-4xl">man</span>
+                </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-black text-coffee-dark mb-3 font-sans">صبابين قهوة الرياض – سرعة وأناقة</h3>
+                  <p className="text-text-muted text-sm leading-relaxed font-sans">
+                    فريق من الشباب السعودي النشيط، يتميزون بالخفة في الحركة والمهارة في صب القهوة دون انقطاع، مع الحفاظ على الابتسامة والهدوء.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-cream-bg border border-gold/10 rounded-xl p-8 shadow-sm hover:shadow-golden transition-shadow duration-300 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-right">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shrink-0 border-2 border-gold/20 text-coffee-dark">
+                  <span className="material-symbols-outlined text-4xl">woman</span>
+                </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-black text-coffee-dark mb-3 font-sans">قهوجيات الرياض – ضيافة نسائية</h3>
+                  <p className="text-text-muted text-sm leading-relaxed font-sans">
+                    للمناسبات النسائية، نوفر "صبابات" و"مباشرات" على أعلى مستوى من الرقي والأمانة، بزي موحد وخدمة تضمن خصوصية وراحة ضيوفك.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact CTA Section */}
+        <section className="py-16 bg-gradient-to-r from-coffee-dark to-text-main text-white border-y-4 border-gold/50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-xl md:text-2xl font-black mb-4 font-sans">مباشر قهوة ومضيف قهوة بالرياض</h2>
+            <p className="text-sm md:text-base text-white max-w-3xl mx-auto mb-10 font-sans">إذا كنت تحتاج إلى "مباشر" خاص لخدمة كبار الشخصيات (VIP) أو للإشراف الكامل على بوفيه المشروبات.</p>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="text-right">
+                <h3 className="text-lg font-bold text-white mb-1 font-sans">تواصل سريع</h3>
+                <p className="text-white text-xs font-sans">متواجدون على مدار 24 ساعة</p>
+              </div>
+              <div className="flex gap-4 w-full md:w-auto flex-col sm:flex-row">
+                <a className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href="tel:0532637955" aria-label="اتصل على 0532637955">
+                  <span className="material-symbols-outlined">phone_iphone</span>
+                  <span>0532637955</span>
+                </a>
+                <a className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href="https://wa.me/966532637955" aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
+                  <span className="material-symbols-outlined">chat</span>
+                  <span>واتساب</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Services Details Section */}
+        <section className="py-20 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="grid md:grid-cols-2 gap-16">
+              <div>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="h-8 w-1 bg-gold"></div>
+                  <h2 className="text-xl md:text-2xl font-black text-coffee-dark font-sans">خدماتنا بالتفصيل</h2>
+                </div>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-gold mt-1">coffee</span>
+                    <div>
+                      <span className="font-bold text-coffee-dark block text-lg">القهوة العربية</span>
+                      <span className="text-text-muted text-sm">شقراء، غامقة، بالهيل والزعفران والمستكة.</span>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-gold mt-1">emoji_food_beverage</span>
+                    <div>
+                      <span className="font-bold text-coffee-dark block text-lg">الشاي بأنواعه</span>
+                      <span className="text-text-muted text-sm">أحمر، أخضر، مغربي، كرك، عدني.</span>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-gold mt-1">local_florist</span>
+                    <div>
+                      <span className="font-bold text-coffee-dark block text-lg">مشروبات الأعشاب</span>
+                      <span className="text-text-muted text-sm">نعناع، حبق، زنجبيل، ليمون، زهورات.</span>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-gold mt-1">nutrition</span>
+                    <div>
+                      <span className="font-bold text-coffee-dark block text-lg">التمور الفاخرة</span>
+                      <span className="text-text-muted text-sm">خلاص، سكري، صقعي (محشي سادة أو مكسرات).</span>
+                    </div>
+                  </li>
                 </ul>
               </div>
-              <div className="bg-[#f8f8f8] rounded-2xl p-6 sm:p-8">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-[#8305A5] rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CoffeeIcon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#8305A5] mb-3">أفضل مضيف قهوة الرياض</h3>
-                  <p className="text-[#666666] text-xs sm:text-sm mb-4">
-                    <strong className="text-[#8305A5]">مباشرين قهوة الرياض</strong> في خدمتكم لجميع المناسبات
-                  </p>
-                  <a
-                    href="tel:0509702164"
-                    className="inline-flex items-center gap-2 bg-[#8305A5] text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 shadow-lg"
-                  >
-                    <PhoneIcon className="w-4 h-4" />
-                    <span>احجز الآن</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Drinks Section - المشروبات التي نقدمها */}
-      <section id="drinks" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#f8f8f8]">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <div className={`transition-all duration-1000 ${isVisible.drinks ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                المشروبات
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                قهوجي وصبابين: المشروبات التي نقدمها
-              </h2>
-              <p className="text-sm sm:text-base text-[#666666] max-w-2xl mx-auto">
-                يقدم فريق <strong className="text-[#8305A5]">قهوجي وصبابين</strong> تشكيلة متنوعة من المشروبات
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
-              {displayDrinks.map((drink, i) => (
-                <div
-                  key={i}
-                  className="group bg-white rounded-2xl overflow-hidden border-2 border-[#8305A5]/10 hover:border-[#8305A5] transition-all duration-500 transform hover:-translate-y-1"
-                >
-                  <div className="bg-[#8305A5] p-4 sm:p-5">
-                    <h3 className="text-base sm:text-lg font-bold text-white">{drink.category}</h3>
-                  </div>
-                  <div className="p-4 sm:p-5">
-                    <ul className="space-y-2 sm:space-y-3">
-                      {drink.items.map((item, j) => (
-                        <li key={j} className="flex items-center gap-2 text-[#333333]">
-                          <span className="w-1.5 h-1.5 bg-[#F17405] rounded-full"></span>
-                          <span className="text-xs sm:text-sm">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How to Book Section */}
-      <section id="booking" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-          <div className={`transition-all duration-1000 ${isVisible.booking ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-[#F17405]/10 text-[#F17405] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                كيفية الحجز
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                احجز قهوجي في الرياض بـ 4 خطوات
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {steps.map((step, i) => (
-                <div key={i} className="relative group">
-                  <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-[#8305A5]/10 hover:border-[#8305A5] transition-all duration-500 hover:shadow-lg text-center">
-                    <div className="text-2xl sm:text-3xl font-black text-[#8305A5]/20 group-hover:text-[#8305A5]/40 transition-colors mb-2">
-                      {step.num}
-                    </div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#8305A5] mb-1">{step.title}</h3>
-                    <p className="text-[#666666] text-[10px] sm:text-xs">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" data-animate className="py-6 sm:py-8 lg:py-10 bg-[#f8f8f8]" aria-labelledby="faq-title">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
-          <div className={`transition-all duration-1000 ${isVisible.faq ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="text-center mb-4 sm:mb-6">
-              <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                أسئلة شائعة
-              </span>
-              <h2 id="faq-title" className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                الأسئلة المتكررة عن قهوجيين الرياض
-              </h2>
-            </div>
-
-            <div className="space-y-3" role="region" aria-label="الأسئلة الشائعة">
-              {displayFaqs.map((faq, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-xl overflow-hidden border-2 border-[#8305A5]/10 transition-all duration-300"
-                >
-                  <button
-                    onClick={() => setActiveAccordion(activeAccordion === i ? null : i)}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between text-right hover:bg-[#f8f8f8] transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#8305A5]"
-                    aria-expanded={activeAccordion === i}
-                    aria-controls={`faq-answer-${i}`}
-                    id={`faq-button-${i}`}
-                  >
-                    <span className="font-semibold text-[#333333] text-xs sm:text-sm pl-3">{faq.q}</span>
-                    <span className={`w-7 h-7 sm:w-8 sm:h-8 bg-[#8305A5] text-white rounded-full flex items-center justify-center transition-transform duration-300 flex-shrink-0 ${activeAccordion === i ? 'rotate-180' : ''}`} aria-hidden="true">
-                      <ChevronDownIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                    </span>
-                  </button>
-                  <div
-                    id={`faq-answer-${i}`}
-                    role="region"
-                    aria-labelledby={`faq-button-${i}`}
-                    className={`overflow-hidden transition-all duration-300 ${activeAccordion === i ? 'max-h-48' : 'max-h-0'}`}
-                    hidden={activeAccordion !== i}
-                  >
-                    <p className="px-4 sm:px-5 pb-4 sm:pb-5 text-[#666666] text-xs sm:text-sm">{faq.a}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA - Purple Background */}
-      <section className="py-6 sm:py-8 lg:py-10 bg-[#8305A5] relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
-            احجز الآن مع أفضل
-          </h2>
-          <h3 className="text-xl sm:text-2xl font-bold text-[#F17405] mb-4 sm:mb-6">
-            قهوجي بالرياض - قهوجيين وصبابين
-          </h3>
-          <p className="text-sm sm:text-base text-white/80 mb-6 sm:mb-8 max-w-xl mx-auto">
-            لا تتردد في التواصل معنا لحجز خدمات <strong className="text-[#F17405]">قهوجيين وصبابين الرياض</strong> لمناسبتك القادمة.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <a
-              href="tel:0509702164"
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#8305A5] px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              <PhoneIcon className="w-5 h-5 group-hover:animate-bounce" />
-              <span>0509702164</span>
-            </a>
-            <a
-              href="https://wa.me/966509702164"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#8305A5] px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-105"
-            >
-              <WhatsAppIcon className="w-5 h-5" />
-              <span>واتساب</span>
-            </a>
-          </div>
-          <p className="text-white/60 mt-6 text-xs sm:text-sm">نحن في خدمتكم على مدار 24 ساعة</p>
-        </div>
-      </section>
-
-      {/* SEO Article Section - محتوى إضافي للـ SEO */}
-      <section id="seo-content" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-          <div className={`transition-all duration-1000 ${isVisible['seo-content'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <article className="prose max-w-none">
-              <div className="bg-[#f8f8f8] rounded-2xl p-6 sm:p-8 mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#8305A5] mb-4 text-center">
-                  قهوجي الرياض - قهوجيين وصبابين الرياض
-                </h2>
-                <p className="text-[#666666] leading-relaxed text-sm sm:text-base mb-4">
-                  إذا كنت تبحث عن <strong className="text-[#8305A5]">قهوجي الرياض</strong> أو <strong className="text-[#8305A5]">قهوجيين وصابين الرياض</strong>،
-                  فأنت في المكان الصحيح. نحن نقدم أفضل خدمات <strong className="text-[#8305A5]">قهوجي وصبابين الرياض</strong> بخبرة تزيد عن 20 عاماً في مجال الضيافة العربية الأصيلة.
-                </p>
-                <p className="text-[#666666] leading-relaxed text-sm sm:text-base mb-4">
-                  يتميز فريق <strong className="text-[#8305A5]">قهوجي وصباب الرياض</strong> بالاحترافية العالية والخبرة الواسعة.
-                  سواء كنت تحتاج <strong className="text-[#8305A5]">قهوجي وصباب</strong> لحفل زفاف أو <strong className="text-[#8305A5]">قهوجين</strong> لمجلس عزاء،
-                  فإن <strong className="text-[#8305A5]">قهوجيين وصبابين الرياض</strong> جاهزون لخدمتكم.
-                </p>
-                <p className="text-[#666666] leading-relaxed text-sm sm:text-base">
-                  نوفر <strong className="text-[#8305A5]">قهوجي</strong> محترف و<strong className="text-[#8305A5]">قهوجين وصبابين بالرياض</strong> لجميع المناسبات.
-                  فريق <strong className="text-[#8305A5]">قهوجيين وصبابين بالرياض</strong> متاح على مدار الساعة.
-                  للحصول على <strong className="text-[#8305A5]">قهوجي في الرياض</strong> اتصل الآن على <strong className="text-[#F17405]">0509702164</strong>.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white border-2 border-[#8305A5]/10 rounded-xl p-5 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold text-[#8305A5] mb-3">صبابين قهوة الرياض</h3>
-                  <p className="text-[#666666] text-xs sm:text-sm leading-relaxed">
-                    <strong className="text-[#8305A5]">صبابين قهوة الرياض</strong> محترفون في تقديم القهوة العربية.
-                    احصل على <strong className="text-[#8305A5]">ارقام قهوجين</strong> وتواصل مع <strong className="text-[#8305A5]">ارقام قهوجيين وصابين الرياض</strong> مباشرة.
-                    <strong className="text-[#8305A5]">ارقام قهوجيين</strong> متاحة 24 ساعة.
-                  </p>
-                </div>
-                <div className="bg-white border-2 border-[#8305A5]/10 rounded-xl p-5 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-bold text-[#8305A5] mb-3">مباشرين قهوة</h3>
-                  <p className="text-[#666666] text-xs sm:text-sm leading-relaxed">
-                    فريق <strong className="text-[#8305A5]">مباشرين قهوة</strong> محترف ومدرب.
-                    نوفر <strong className="text-[#8305A5]">صبابات قهوة</strong> و<strong className="text-[#8305A5]">قهوجيات الرياض</strong> للمناسبات النسائية.
-                    <strong className="text-[#8305A5]">صبابات الرياض</strong> بالحشمة والاحترافية.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-[#8305A5]/5 rounded-2xl p-6 sm:p-8">
-                <h3 className="text-lg sm:text-xl font-bold text-[#8305A5] mb-4 text-center">
-                  قهوجيين بالرياض - قهوجي وصبابين بالرياض
-                </h3>
-                <p className="text-[#666666] text-sm sm:text-base leading-relaxed mb-4 text-center">
-                  نحن <strong className="text-[#8305A5]">قهوجيين بالرياض</strong> الأفضل. خدمات <strong className="text-[#8305A5]">قهوجي وصبابين بالرياض</strong> متميزة.
-                  فريق <strong className="text-[#8305A5]">قهوجي وصبابين</strong> محترف. <strong className="text-[#8305A5]">قهوجي وصبابين قهوة بالرياض</strong> في خدمتكم.
-                </p>
-                <p className="text-[#666666] text-sm sm:text-base leading-relaxed mb-4 text-center">
-                  <strong className="text-[#8305A5]">قهوجي صبابين الرياض</strong> - <strong className="text-[#8305A5]">قهوجي الرياض قهوجيين وصبابين</strong> -
-                  <strong className="text-[#8305A5]">أرقام قهوجيين في الرياض</strong> - <strong className="text-[#8305A5]">أرقام قهوجيين بالرياض</strong>
-                </p>
-                <p className="text-[#666666] text-sm sm:text-base leading-relaxed text-center">
-                  <strong className="text-[#8305A5]">أفضل قهوجي بالرياض</strong> - <strong className="text-[#8305A5]">مباشرين قهوة الرياض</strong> -
-                  <strong className="text-[#8305A5]">رقم قهوجي بالرياض</strong>: <strong className="text-[#F17405]">0509702164</strong> -
-                  <strong className="text-[#8305A5]">مضيف قهوة بالرياض</strong> - <strong className="text-[#8305A5]">أفضل مضيف قهوة الرياض</strong> -
-                  <strong className="text-[#8305A5]">قهوجيين الرياض</strong>
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer - Purple Background */}
-      <footer className="bg-[#8305A5] text-white py-8 sm:py-12" role="contentinfo">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
-              <Image
-                src="/images/logo.webp"
-                alt="قهوجي الرياض - شعار"
-                width={100}
-                height={100}
-                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
-              />
               <div>
-                <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">قهوجي الرياض</p>
-                <p className="text-white/70 text-xs sm:text-sm">قهوجيين وصبابين الرياض</p>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="h-8 w-1 bg-gold"></div>
+                  <h2 className="text-xl md:text-2xl font-black text-coffee-dark font-sans">تغطية شاملة للرياض</h2>
+                </div>
+                <div className="bg-white p-8 rounded-lg shadow-md border border-gold/10 relative overflow-hidden h-full">
+                  <div className="absolute -right-10 -bottom-10 opacity-5">
+                    <span className="material-symbols-outlined text-9xl text-coffee-dark">map</span>
+                  </div>
+                  <p className="text-sm md:text-base text-text-muted mb-8 leading-relaxed font-sans">
+                    نصل إليكم أينما كنتم في مدينة الرياض وضواحيها. نغطي كافة الأحياء بسرعة وكفاءة عالية.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-cream-bg text-coffee-dark p-3 rounded-md text-center font-bold border border-gold/20 hover:bg-gold hover:text-white transition-colors cursor-default">شمال الرياض</div>
+                    <div className="bg-cream-bg text-coffee-dark p-3 rounded-md text-center font-bold border border-gold/20 hover:bg-gold hover:text-white transition-colors cursor-default">شرق الرياض</div>
+                    <div className="bg-cream-bg text-coffee-dark p-3 rounded-md text-center font-bold border border-gold/20 hover:bg-gold hover:text-white transition-colors cursor-default">غرب الرياض</div>
+                    <div className="bg-cream-bg text-coffee-dark p-3 rounded-md text-center font-bold border border-gold/20 hover:bg-gold hover:text-white transition-colors cursor-default">جنوب الرياض</div>
+                    <div className="col-span-2 bg-cream-bg text-coffee-dark p-3 rounded-md text-center font-bold border border-gold/20 hover:bg-gold hover:text-white transition-colors cursor-default">الدرعية وضواحي الرياض</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <p className="text-white/70 mb-4 text-xs sm:text-sm max-w-xl mx-auto">
-              أفضل خدمات <strong>قهوجي وصبابين بالرياض</strong> - <strong>قهوجيين وصبابين الرياض</strong> -
-              <strong>صبابين قهوة الرياض</strong> - <strong>مباشرين قهوة</strong> - <strong>قهوجيات الرياض</strong>
-            </p>
-            <a
-              href="tel:0509702164"
-              className="text-xl sm:text-2xl font-bold text-[#F17405] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white rounded"
-              aria-label="اتصل بنا على الرقم 0509702164"
-            >
-              0509702164
-            </a>
-            <div className="border-t border-white/20 mt-6 pt-6">
-              <p className="text-white/50 text-[10px] sm:text-xs">
-                جميع الحقوق محفوظة © {new Date().getFullYear()} قهوجي الرياض - قهوجيين وصبابين
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-16">
+              <span className="text-gold font-bold tracking-widest uppercase text-xs font-sans">تجارب حقيقية</span>
+              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mt-2 font-sans">آراء العملاء</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-cream-bg p-8 rounded-tl-3xl rounded-br-3xl shadow-lg border border-transparent hover:border-gold/30 transition-all">
+                <div className="flex text-gold mb-4">
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                </div>
+                <p className="text-text-muted italic mb-6 leading-relaxed">"بيض الله وجيهكم، القهوة كايفة والصبابين قمة في الاحترام والأدب. انصح بالتعامل مع مؤسسة نخوة القهوة."</p>
+                <div className="flex items-center gap-3 border-t border-gold/10 pt-4">
+                  <div className="w-10 h-10 bg-coffee-dark rounded-full flex items-center justify-center text-gold font-bold">أ</div>
+                  <p className="font-bold text-coffee-dark text-sm">أبو عبدالله</p>
+                </div>
+              </div>
+              <div className="bg-coffee-dark text-white p-8 rounded-tl-3xl rounded-br-3xl shadow-xl transform md:-translate-y-2 relative">
+                <div className="absolute top-4 left-4 text-gold/20 text-6xl font-serif">&ldquo;</div>
+                <div className="flex text-gold mb-4">
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                </div>
+                <p className="text-white/90 italic mb-6 leading-relaxed">"تعاملنا معهم في زواج ابني، التزام بالوقت وزي موحد يفتح النفس. شكراً لكم."</p>
+                <div className="flex items-center gap-3 border-t border-white/20 pt-4">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-coffee-dark font-bold">أ</div>
+                  <p className="font-bold text-white text-sm">أم فهد</p>
+                </div>
+              </div>
+              <div className="bg-cream-bg p-8 rounded-tl-3xl rounded-br-3xl shadow-lg border border-transparent hover:border-gold/30 transition-all">
+                <div className="flex text-gold mb-4">
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                  <span className="material-symbols-outlined text-sm">star</span>
+                </div>
+                <p className="text-text-muted italic mb-6 leading-relaxed">"أفضل قهوجي بالرياض بلا منازع، الدلال نظيفة والقهوة طعمها في الراس."</p>
+                <div className="flex items-center gap-3 border-t border-gold/10 pt-4">
+                  <div className="w-10 h-10 bg-coffee-dark rounded-full flex items-center justify-center text-gold font-bold">م</div>
+                  <p className="font-bold text-coffee-dark text-sm">مشعل العتيبي</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-black text-coffee-dark text-center mb-10 font-sans">الأسئلة الشائعة</h2>
+            <div className="space-y-4">
+              <div className="bg-white border-r-4 border-gold rounded-l-lg p-6 shadow-sm">
+                <h3 className="font-bold text-coffee-dark text-lg mb-2">هل توفرون القهوة والشاي أم فقط الصبابين؟</h3>
+                <p className="text-text-muted text-sm">نوفر خدمة شاملة (القهوة، الشاي، التمور، الأكواب، الدلال) أو خدمة صبابين فقط حسب رغبة العميل.</p>
+              </div>
+              <div className="bg-white border-r-4 border-coffee-dark rounded-l-lg p-6 shadow-sm">
+                <h3 className="font-bold text-coffee-dark text-lg mb-2">كم سعر القهوجي في الرياض؟</h3>
+                <p className="text-text-muted text-sm">الأسعار تختلف حسب عدد الصبابين، نوع المناسبة، ومدة الخدمة. تواصل معنا للحصول على أفضل عرض سعر.</p>
+              </div>
+              <div className="bg-white border-r-4 border-gold rounded-l-lg p-6 shadow-sm">
+                <h3 className="font-bold text-coffee-dark text-lg mb-2">هل لديكم زي موحد؟</h3>
+                <p className="text-text-muted text-sm">نعم، يلتزم جميع العاملين لدينا بزي سعودي رسمي موحد ونظيف يليق بمناسباتكم.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 bg-coffee-dark relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNCODg2MEIiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTUwIDUwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMHMtMTAtNC40NzctMTAtMTAgNC40NzctMTAgMTAtMTB6TTEwIDEwYzAtNS41MjMgNC40NzctMTAgMTAtMTBzMTAgNC40NzcgMTAgMTAtNC40NzcgMTAtMTAgMTBjMCA1LjUyMy00LjQ3NyAxMC0xMCAxMFMwIDI1LjUyMyAwIDIwczQuNDc3LTEwIDEwLTEwem0xMCA4YzQuNDE4IDAgOC0zLjU4MiA4LThzLTMuNTgyLTgtOC04LTggMy41ODItOCA4IDMuNTgyIDggOCA4em00MCA0MGM0LjQxOCAwIDgtMy41ODIgOC04cy0zLjU4Mi04LTgtOC04IDMuNTgyLTggOCAzLjU4MiA4IDggOHoiIC8+PC9nPjwvZz48L3N2Zz4=')] opacity-5"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gold/5 rounded-full blur-3xl"></div>
+          <div className="container mx-auto px-4 relative z-10">
+            <h2 className="text-2xl md:text-3xl font-black text-white mb-6 drop-shadow-md font-sans">
+              مناسبتك تستحق <span className="text-white">الفخامة</span>
+            </h2>
+            <p className="text-base md:text-lg text-white mb-10 font-bold font-sans">قهوجي الرياض – مؤسسة نخوة القهوة</p>
+            <div className="flex flex-col items-center gap-8">
+              <a
+                className="inline-flex items-center gap-4 bg-gradient-to-r from-gold via-primary-magenta to-gold hover:from-white hover:to-white hover:text-coffee-dark text-white px-14 py-6 rounded-3xl font-black text-2xl shadow-2xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2"
+                href="tel:0532637955"
+                style={{ boxShadow: '0 15px 50px rgba(183,66,167,0.5)' }}
+                aria-label="اتصل الآن على 0532637955"
+              >
+                <span className="material-symbols-outlined text-4xl">call</span>
+                اتصل الآن
+              </a>
+              <div className="inline-flex items-center gap-2 text-lg font-medium text-white border-2 border-white/50 px-8 py-3 rounded-full bg-black/20 backdrop-blur-sm">
+                <span className="material-symbols-outlined">location_on</span>
+                تغطية كاملة داخل الرياض
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-[#2D1A18] text-gray-400 py-16 border-t border-white/5">
+        <div className="container mx-auto px-6 md:px-12 lg:px-16">
+          <div className="grid md:grid-cols-4 gap-10 mb-10 text-center md:text-right">
+            <div className="md:col-span-2">
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
+                <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/images/logo-new-one.webp"
+                    alt="نخوة القهوة"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                    style={{ background: 'transparent' }}
+                  />
+                </div>
+                <h3 className="text-2xl font-black text-white">مؤسسة نخوة القهوة</h3>
+              </div>
+              <p className="text-gray-500 leading-relaxed max-w-md mx-auto md:mx-0">
+                الخيار الأمثل لخدمات الضيافة العربية في الرياض. نقدم تجربة استثنائية تمزج بين الأصالة والفخامة لتشريف مناسباتكم.
               </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 inline-block">روابط سريعة</h3>
+              <ul className="space-y-3">
+                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#"><span className="material-symbols-outlined text-xs">chevron_left</span>الرئيسية</a></li>
+                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#about"><span className="material-symbols-outlined text-xs">chevron_left</span>من نحن</a></li>
+                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#services"><span className="material-symbols-outlined text-xs">chevron_left</span>خدماتنا</a></li>
+                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="tel:0506451744"><span className="material-symbols-outlined text-xs">chevron_left</span>اتصل بنا</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 inline-block">تواصل معنا</h3>
+              <div className="space-y-4">
+                <a href="tel:0532637955" className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors" aria-label="اتصل بنا على 0532637955">
+                  <span className="material-symbols-outlined text-gold">call</span>
+                  <span dir="ltr">0532637955</span>
+                </a>
+                <p className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors">
+                  <span className="material-symbols-outlined text-gold">location_on</span>
+                  الرياض، المملكة العربية السعودية
+                </p>
+                <p className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors">
+                  <span className="material-symbols-outlined text-gold">mail</span>
+                  info@nakhwa-coffee.com
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-white/5 pt-8 text-center">
+            <div className="flex flex-col items-center gap-6">
+              <p className="text-sm text-gray-400">© 2025 قهوجي الرياض - مؤسسة نخوة القهوة. جميع الحقوق محفوظة.</p>
+              <div className="flex gap-6 flex-wrap justify-center">
+                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href="#" title="الموقع الإلكتروني">
+                  <span className="material-symbols-outlined text-base">language</span>
+                  <span>الموقع</span>
+                </a>
+                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href="https://wa.me/966532637955" target="_blank" rel="noopener noreferrer" title="واتساب" aria-label="تواصل معنا عبر واتساب">
+                  <span className="material-symbols-outlined text-base">chat</span>
+                  <span>واتساب</span>
+                </a>
+                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href="tel:0532637955" title="اتصل بنا" aria-label="اتصل بنا على 0532637955">
+                  <span className="material-symbols-outlined text-base">call</span>
+                  <span>اتصل</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Floating Buttons */}
-      <aside className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-50 flex flex-col gap-3" aria-label="روابط التواصل السريع">
-        <a
-          href="https://wa.me/966509702164"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366]"
-          aria-label="تواصل معنا عبر واتساب"
+      {/* Scroll to Top Button - Floating */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 left-8 bg-gold hover:bg-coffee-dark text-white p-4 rounded-full shadow-2xl transition-all duration-300 z-50 hover:scale-110 animate-bounce"
+          title="العودة للأعلى"
         >
-          <WhatsAppIcon className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
-        </a>
-      </aside>
+          <span className="material-symbols-outlined text-2xl">arrow_upward</span>
+        </button>
+      )}
 
-      <aside className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50" aria-label="زر الاتصال السريع">
-        <a
-          href="tel:0509702164"
-          className="group w-12 h-12 sm:w-14 sm:h-14 bg-[#F17405] hover:bg-[#d96504] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F17405]"
-          aria-label="اتصل بنا الآن"
-        >
-          <PhoneIcon className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
-        </a>
-      </aside>
+      {/* Material Symbols Style */}
+      <style jsx global>{`
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          vertical-align: middle;
+        }
+      `}</style>
     </div>
   );
 }

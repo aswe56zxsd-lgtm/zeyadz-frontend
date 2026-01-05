@@ -2,8 +2,8 @@ import './globals.css';
 
 export const metadata = {
   metadataBase: new URL('https://qahwajiz.com'),
-  title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات والحفلات - 0509702164',
-  description: 'قهوجي الرياض - أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات. قهوجي وصباب محترف للأعراس والمؤتمرات. احجز الآن 0509702164',
+  title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات والحفلات - 0532637955',
+  description: 'قهوجي الرياض - أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات. قهوجي وصباب محترف للأعراس والمؤتمرات. احجز الآن 0532637955',
   keywords: 'قهوجي الرياض, قهوجيين الرياض, صبابين الرياض, قهوجي وصباب, صبابات قهوة, مباشرين قهوة, قهوجيين وصبابين بالرياض, أرقام قهوجيين, قهوجي للمناسبات, صباب قهوة الرياض',
   authors: [{ name: 'قهوجي الرياض' }],
   creator: 'قهوجي الرياض',
@@ -15,7 +15,7 @@ export const metadata = {
     email: false,
   },
   openGraph: {
-    title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات - 0509702164',
+    title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات - 0532637955',
     description: 'أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة 20 عاماً. احجز الآن!',
     url: 'https://qahwajiz.com',
     siteName: 'قهوجي الرياض',
@@ -77,7 +77,7 @@ export default function RootLayout({ children }) {
         "alternateName": "قهوجيين وصبابين الرياض",
         "description": "أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة تزيد عن 20 عاماً في الضيافة العربية الأصيلة.",
         "url": "https://qahwajiz.com",
-        "telephone": "+966509702164",
+        "telephone": "+966532637955",
         "priceRange": "$$",
         "image": "https://qahwajiz.com/og-image.png",
         "address": {
@@ -151,7 +151,7 @@ export default function RootLayout({ children }) {
             "name": "ما هي أسعار خدمات قهوجيين وصبابين؟",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "تختلف الأسعار حسب نوع المناسبة وعدد الضيوف والخدمات المطلوبة. اتصل بنا على 0509702164 للحصول على عرض سعر مفصل."
+              "text": "تختلف الأسعار حسب نوع المناسبة وعدد الضيوف والخدمات المطلوبة. اتصل بنا على 0532637955 للحصول على عرض سعر مفصل."
             }
           },
           {
@@ -189,20 +189,14 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <link
-          rel="preload"
-          href="/fonts/TheYearofHandicrafts-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/TheYearofHandicrafts-Bold.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <meta name="version" content="3.1.0" />
+        <meta httpEquiv="cache-control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="pragma" content="no-cache" />
+        <meta httpEquiv="expires" content="0" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

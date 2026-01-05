@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حذف الكاش</title>
+    <script>
+        // Clear all caches
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                    caches.delete(name);
+                });
+            });
+        }
+        
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Clear sessionStorage
+        sessionStorage.clear();
+        
+        // Redirect to home with cache-busting parameter
+        setTimeout(function() {
+            window.location.href = '/?v=' + new Date().getTime();
+        }, 1000);
+    </script>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5;">
+    <h1 style="color: #B8860B;">جاري حذف الكاش...</h1>
+    <p>سيتم إعادة توجيهك للصفحة الرئيسية...</p>
+</body>
+</html>

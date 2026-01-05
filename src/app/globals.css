@@ -3,54 +3,68 @@
 @tailwind utilities;
 
 :root {
-  --primary: #8305a5;
-  --purple: #8305a5;
-  --orange: #f17405;
+  /* Logo-based Primary Colors */
+  --primary: #B742A7;
+  --primary-magenta: #B742A7;
+  --primary-purple: #7B4AA9;
+  --primary-cyan: #88CFEE;
+  --primary-silver: #C0C0C0;
+
+  /* Main Brand Colors */
+  --coffee-dark: #7B4AA9;
+  --coffee-medium: #9B65C7;
+  --gold: #B742A7;
+  --bronze: #88CFEE;
+  --cream-bg: #F5F3FF;
+  --cream-accent: #E9E5FF;
+
+  /* Legacy support (backwards compatibility) */
+  --primary-pink: #B742A7;
+  --primary-blue: #88CFEE;
+  --purple: #B742A7;
+  --orange: #88CFEE;
+  --neutral-gray: #DBDBDB;
+
+  /* Hover States */
+  --primary-magenta-hover: #9A3690;
+  --primary-purple-hover: #663B8F;
+  --primary-cyan-hover: #6ABFE5;
+  --primary-pink-hover: #9A3690;
+  --primary-blue-hover: #6ABFE5;
+
+  /* Active States */
+  --primary-magenta-active: #8A2F7F;
+  --primary-purple-active: #5A3678;
+  --primary-cyan-active: #5AB0D8;
+  --primary-pink-active: #8A2F7F;
+  --primary-blue-active: #5AB0D8;
+
+  /* Backgrounds */
   --background-light: #FFFFFF;
-  --surface-light: #f8f8f8;
-  --text-main: #333333;
-  --text-muted: #666666;
-  --border-color: #e0e0e0;
+  --surface-light: #F9F7FF;
+  --background-blue-light: rgba(136, 207, 238, 0.1);
+  --background-purple-light: rgba(123, 74, 169, 0.05);
+  --background-gray: rgba(219, 219, 219, 0.3);
 
-  --font-main: 'TheYearofHandicrafts', 'Segoe UI', Tahoma, Arial, sans-serif;
-}
+  /* Text Colors */
+  --text-main: #3E2564;
+  --text-muted: #6B5B95;
+  --text-primary: rgba(62, 37, 100, 0.87);
+  --text-secondary: rgba(62, 37, 100, 0.6);
+  --text-disabled: rgba(62, 37, 100, 0.38);
 
-/* TheYearofHandicrafts Font */
-@font-face {
-  font-family: 'TheYearofHandicrafts';
-  font-display: swap;
-  font-weight: 400;
-  src: url('/fonts/TheYearofHandicrafts-Regular.woff2') format('woff2'),
-       url('/fonts/TheYearofHandicrafts-Regular.otf') format('opentype');
-}
+  /* Borders */
+  --border-color: #E9E5FF;
 
-@font-face {
-  font-family: 'TheYearofHandicrafts';
-  font-display: swap;
-  font-weight: 500;
-  src: url('/fonts/TheYearofHandicrafts-Medium.otf') format('opentype');
-}
+  /* Shadows */
+  --shadow-pink-sm: 0 2px 8px rgba(183, 66, 167, 0.12);
+  --shadow-pink-md: 0 4px 16px rgba(183, 66, 167, 0.18);
+  --shadow-pink-lg: 0 8px 32px rgba(183, 66, 167, 0.24);
+  --shadow-pink-xl: 0 16px 48px rgba(183, 66, 167, 0.30);
+  --shadow-purple-glow: 0 4px 20px -2px rgba(123, 74, 169, 0.3);
+  --shadow-cyan-glow: 0 4px 20px -2px rgba(136, 207, 238, 0.3);
 
-@font-face {
-  font-family: 'TheYearofHandicrafts';
-  font-display: swap;
-  font-weight: 600;
-  src: url('/fonts/TheYearofHandicrafts-SemiBold.otf') format('opentype');
-}
-
-@font-face {
-  font-family: 'TheYearofHandicrafts';
-  font-display: swap;
-  font-weight: 700;
-  src: url('/fonts/TheYearofHandicrafts-Bold.woff2') format('woff2'),
-       url('/fonts/TheYearofHandicrafts-Bold.otf') format('opentype');
-}
-
-@font-face {
-  font-family: 'TheYearofHandicrafts';
-  font-display: swap;
-  font-weight: 900;
-  src: url('/fonts/TheYearofHandicrafts-Black.otf') format('opentype');
+  --font-main: 'Tajawal', 'Segoe UI', Tahoma, Arial, sans-serif;
 }
 
 * {
@@ -76,7 +90,7 @@ body {
 }
 
 ::selection {
-  background-color: var(--purple);
+  background-color: var(--primary-pink);
   color: white;
 }
 
@@ -88,11 +102,11 @@ body {
   background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--purple);
+  background: var(--primary-pink);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6a0485;
+  background: var(--primary-pink-hover);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -102,10 +116,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--purple);
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
+h1 { font-size: 1.875rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.125rem; }
 
 p {
   font-size: 1rem;
@@ -215,32 +229,32 @@ p {
   }
 
   .btn-primary {
-    background-color: var(--purple);
+    background-color: var(--primary-pink);
     color: white;
-    border: 2px solid var(--purple);
+    border: 2px solid var(--primary-pink);
   }
   .btn-primary:hover {
-    background-color: #6a0485;
-    border-color: #6a0485;
+    background-color: var(--primary-pink-hover);
+    border-color: var(--primary-pink-hover);
   }
 
   .btn-secondary {
     background-color: transparent;
-    color: var(--purple);
-    border: 2px solid var(--purple);
+    color: var(--primary-purple);
+    border: 2px solid var(--primary-purple);
   }
   .btn-secondary:hover {
-    background-color: var(--purple);
+    background-color: var(--primary-purple);
     color: white;
   }
 
   .btn-outline {
     @apply border-2 bg-transparent;
-    border-color: var(--purple);
-    color: var(--purple);
+    border-color: var(--primary-pink);
+    color: var(--primary-pink);
   }
   .btn-outline:hover {
-    background-color: var(--purple);
+    background-color: var(--primary-pink);
     color: white;
   }
 
@@ -259,8 +273,8 @@ p {
     color: var(--text-muted);
   }
   .input:focus {
-    border-color: var(--purple);
-    box-shadow: 0 0 0 2px rgba(131, 5, 165, 0.2);
+    border-color: var(--primary-pink);
+    box-shadow: 0 0 0 2px rgba(183, 66, 167, 0.2);
   }
 
   .card {
@@ -271,7 +285,7 @@ p {
   }
   .card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 40px rgba(131, 5, 165, 0.15);
+    box-shadow: 0 10px 40px rgba(183, 66, 167, 0.15);
   }
 
   .badge {
@@ -279,8 +293,8 @@ p {
   }
 
   .badge-primary {
-    background: rgba(131, 5, 165, 0.1);
-    color: var(--purple);
+    background: rgba(183, 66, 167, 0.1);
+    color: var(--primary-pink);
   }
 
   .badge-success {
@@ -289,8 +303,8 @@ p {
   }
 
   .badge-warning {
-    background: rgba(241, 116, 5, 0.1);
-    color: var(--orange);
+    background: rgba(136, 207, 238, 0.1);
+    color: var(--primary-blue);
   }
 
   .badge-danger {
@@ -339,7 +353,7 @@ p {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(131, 5, 165, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(183, 66, 167, 0.1), transparent);
   transform: translateX(-100%);
   animation: shimmer 1.5s infinite;
   will-change: transform;
@@ -387,7 +401,7 @@ p {
 }
 
 .prose strong {
-  color: var(--orange);
+  color: var(--primary-pink);
 }
 
 /* Line Clamp */
@@ -408,27 +422,43 @@ p {
 /* Image Styles */
 .img-styled {
   border-radius: 0.75rem;
-  box-shadow: 0 4px 20px rgba(131, 5, 165, 0.15);
-  border: 2px solid var(--purple);
+  box-shadow: 0 4px 20px rgba(183, 66, 167, 0.15);
+  border: 2px solid var(--primary-pink);
   transition: all 0.3s ease;
 }
 
 .img-styled:hover {
-  box-shadow: 0 8px 30px rgba(131, 5, 165, 0.25);
+  box-shadow: 0 8px 30px rgba(183, 66, 167, 0.25);
 }
 
 /* Icon with border */
 .icon-bordered {
-  border: 2px solid var(--purple);
+  border: 2px solid var(--primary-pink);
   border-radius: 0.5rem;
   padding: 0.5rem;
   color: white;
-  background-color: var(--purple);
+  background-color: var(--primary-pink);
+}
+
+/* Octagon shape for images */
+.octagon {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.octagon-border {
+  position: relative;
+  padding: 4px;
+  background: linear-gradient(135deg, #B742A7, #88CFEE);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.octagon-border img {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.25rem; }
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
 }

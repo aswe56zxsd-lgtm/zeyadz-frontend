@@ -47,18 +47,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#8305A5] to-[#5a037a] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#B742A7] to-[#7B4AA9] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto mb-4 relative">
+          <div className="w-20 h-20 mx-auto mb-4 relative overflow-hidden">
             <Image
-              src="/images/logo.webp"
+              src="/images/logo-new-one.webp"
               alt="قهوجي الرياض"
               fill
               className="object-contain"
+              style={{ background: 'transparent' }}
             />
           </div>
-          <h1 className="text-2xl font-bold text-[#8305A5]">تسجيل الدخول</h1>
+          <h1 className="text-2xl font-bold text-[#B742A7]">تسجيل الدخول</h1>
           <p className="text-[#666666] text-sm mt-2">لوحة تحكم قهوجي الرياض</p>
         </div>
 
@@ -79,7 +80,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border-2 border-[#8305A5]/20 rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-[#333333]"
+              className="w-full px-4 py-3 border-2 border-[#B742A7]/20 rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-[#333333]"
               placeholder="admin@example.com"
               dir="ltr"
             />
@@ -95,7 +96,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 border-2 border-[#8305A5]/20 rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-[#333333]"
+              className="w-full px-4 py-3 border-2 border-[#B742A7]/20 rounded-xl focus:border-[#B742A7] focus:outline-none transition-colors text-[#333333]"
               placeholder="••••••••"
               dir="ltr"
             />
@@ -104,7 +105,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#8305A5] hover:bg-[#6a0485] text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full bg-[#B742A7] hover:bg-[#9A3690] text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -121,7 +122,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-8 text-center">
-          <a href="/" className="text-[#8305A5] hover:text-[#6a0485] text-sm font-medium transition-colors">
+          <a href="/" className="text-[#B742A7] hover:text-[#9A3690] text-sm font-medium transition-colors">
             العودة للصفحة الرئيسية
           </a>
         </div>

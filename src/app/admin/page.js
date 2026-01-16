@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 // Icons
 const HomeIcon = ({ className = "w-5 h-5" }) => (
@@ -41,12 +40,6 @@ const EditIcon = ({ className = "w-5 h-5" }) => (
   </svg>
 );
 
-const ChevronDownIcon = ({ className = "w-5 h-5" }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-  </svg>
-);
-
 const MenuIcon = ({ className = "w-6 h-6" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -59,9 +52,10 @@ const CloseIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
-const SectionIcon = ({ className = "w-5 h-5" }) => (
+const SettingsIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 );
 
@@ -103,7 +97,7 @@ const TagIcon = ({ className = "w-5 h-5" }) => (
 
 export default function AdminPage() {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('sections');
+  const [activeTab, setActiveTab] = useState('settings');
   const [data, setData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -122,7 +116,7 @@ export default function AdminPage() {
     }
 
     try {
-      JSON.parse(userData); // Validate user data format
+      JSON.parse(userData);
       fetchData(token);
     } catch {
       router.push('/login');
@@ -157,39 +151,6 @@ export default function AdminPage() {
   const showMessage = (type, text) => {
     setMessage({ type, text });
     setTimeout(() => setMessage({ type: '', text: '' }), 3000);
-  };
-
-  const handleSaveSection = async (sectionKey, content) => {
-    setSaving(true);
-    try {
-      const token = localStorage.getItem('token');
-      const section = data.sections.find(s => s.section_key === sectionKey);
-
-      const response = await fetch(`${API_URL}/homepage/sections/${sectionKey}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          section_name: section.section_name,
-          content: content,
-          is_active: section.is_active
-        }),
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        showMessage('success', 'تم الحفظ بنجاح');
-        fetchData(token);
-      } else {
-        showMessage('error', result.message || 'حدث خطأ');
-      }
-    } catch (error) {
-      showMessage('error', 'حدث خطأ في الحفظ');
-    } finally {
-      setSaving(false);
-    }
   };
 
   const handleSaveItem = async (endpoint, id, itemData) => {
@@ -247,6 +208,33 @@ export default function AdminPage() {
     }
   };
 
+  const handleSaveSettings = async (settingsData) => {
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/settings`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(settingsData),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        showMessage('success', 'تم حفظ الإعدادات بنجاح');
+        fetchData(token);
+      } else {
+        showMessage('error', result.message || 'حدث خطأ');
+      }
+    } catch (error) {
+      showMessage('error', 'حدث خطأ في الحفظ');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
@@ -259,7 +247,7 @@ export default function AdminPage() {
   }
 
   const tabs = [
-    { id: 'sections', name: 'أقسام الصفحة', icon: SectionIcon },
+    { id: 'settings', name: 'الإعدادات العامة', icon: SettingsIcon },
     { id: 'services', name: 'الخدمات', icon: ServiceIcon },
     { id: 'features', name: 'المميزات', icon: StarIcon },
     { id: 'events', name: 'المناسبات', icon: CalendarIcon },
@@ -268,133 +256,110 @@ export default function AdminPage() {
     { id: 'keywords', name: 'الكلمات المفتاحية', icon: TagIcon },
   ];
 
+  // Extract settings from sections
+  const getSettingsFromSections = () => {
+    const heroSection = data?.sections?.find(s => s.section_key === 'hero');
+    const content = heroSection?.content || {};
+    return {
+      site_name: content.site_name || 'قهوجي الرياض',
+      site_slogan: content.site_slogan || 'قهوجيين وصبابين الرياض',
+      badge_text: content.badge || 'أفضل قهوجي بالرياض - قهوجيين وصبابين',
+      phone: content.phone || '0509702164',
+      whatsapp: content.whatsapp || '966509702164',
+      stats: content.stats || [
+        { num: '+20', label: 'سنة خبرة' },
+        { num: '+5000', label: 'مناسبة' },
+        { num: '+50', label: 'قهوجي محترف' }
+      ]
+    };
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f9fa]" dir="rtl">
-      {/* Header - Fixed Position */}
+      {/* Header */}
       <header className="bg-[#8305A5] text-white shadow-lg fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 sm:h-24">
-            {/* Logo & Title */}
-            <div className="flex items-center gap-4 sm:gap-5">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-3 sm:gap-4">
               <img
                 src="/images/logo.webp"
                 alt="قهوجي الرياض"
-                width={60}
-                height={60}
-                className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] lg:w-[70px] lg:h-[70px] object-contain"
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
               />
-              <span className="text-lg sm:text-xl lg:text-2xl font-bold">قهوجي الرياض</span>
+              <div>
+                <span className="text-base sm:text-lg font-bold block">لوحة التحكم</span>
+                <span className="text-xs text-white/70">قهوجي الرياض</span>
+              </div>
             </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
               <a
                 href="/"
                 target="_blank"
-                className="flex items-center gap-2 px-5 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all duration-300 text-sm font-medium border border-white/20"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all text-sm"
               >
-                <HomeIcon className="w-5 h-5" />
-                <span>للموقع</span>
+                <HomeIcon className="w-4 h-4" />
+                <span>الموقع</span>
               </a>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-5 py-3 bg-[#F17405] hover:bg-[#d96504] rounded-xl transition-all duration-300 text-sm font-medium shadow-md"
+                className="flex items-center gap-2 px-4 py-2 bg-[#F17405] hover:bg-[#d96504] rounded-lg transition-all text-sm"
               >
-                <LogoutIcon className="w-5 h-5" />
+                <LogoutIcon className="w-4 h-4" />
                 <span>خروج</span>
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl hover:bg-white/10 transition-colors border border-white/20"
+              className="md:hidden p-2 rounded-lg hover:bg-white/10"
             >
-              {mobileMenuOpen ? <CloseIcon className="w-7 h-7" /> : <MenuIcon className="w-7 h-7" />}
+              {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#6a0485] border-t border-white/10">
-            <div className="container mx-auto px-4 py-4 space-y-3">
-              <a
-                href="/"
-                target="_blank"
-                className="flex items-center gap-3 px-5 py-4 bg-white/10 hover:bg-white/20 rounded-xl transition-colors text-base"
-              >
-                <HomeIcon className="w-6 h-6" />
-                <span>زيارة الموقع</span>
-              </a>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-5 py-4 bg-[#F17405] hover:bg-[#d96504] rounded-xl transition-colors text-base font-medium"
-              >
-                <LogoutIcon className="w-6 h-6" />
-                <span>تسجيل الخروج</span>
-              </button>
-            </div>
+          <div className="md:hidden bg-[#6a0485] border-t border-white/10 px-4 py-3 space-y-2">
+            <a href="/" target="_blank" className="flex items-center gap-2 px-4 py-3 bg-white/10 rounded-lg">
+              <HomeIcon className="w-5 h-5" />
+              <span>زيارة الموقع</span>
+            </a>
+            <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-3 bg-[#F17405] rounded-lg">
+              <LogoutIcon className="w-5 h-5" />
+              <span>تسجيل الخروج</span>
+            </button>
           </div>
         )}
       </header>
 
       {/* Message Toast */}
       {message.text && (
-        <div className={`fixed top-24 sm:top-28 left-1/2 transform -translate-x-1/2 z-40 px-6 py-3 rounded-xl shadow-lg transition-all duration-300 ${
-          message.type === 'success'
-            ? 'bg-green-500 text-white'
-            : 'bg-red-500 text-white'
+        <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-lg ${
+          message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
         }`}>
           <div className="flex items-center gap-2">
-            {message.type === 'success' ? (
-              <SaveIcon className="w-5 h-5" />
-            ) : (
-              <CloseIcon className="w-5 h-5" />
-            )}
+            {message.type === 'success' ? <SaveIcon className="w-5 h-5" /> : <CloseIcon className="w-5 h-5" />}
             <span className="font-medium">{message.text}</span>
           </div>
         </div>
       )}
 
-      {/* Main Content with padding for fixed header */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pt-24 sm:pt-28 lg:pt-32">
-        {/* Tabs - Desktop */}
-        <div className="hidden lg:block bg-white rounded-2xl shadow-sm mb-6 p-2">
-          <div className="flex gap-2">
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 pt-20 sm:pt-24">
+        {/* Tabs */}
+        <div className="bg-white rounded-xl shadow-sm mb-4 p-2 overflow-x-auto">
+          <div className="flex gap-1 min-w-max">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? 'bg-[#8305A5] text-white shadow-lg shadow-[#8305A5]/30'
-                      : 'bg-transparent text-[#666666] hover:bg-[#8305A5]/5 hover:text-[#8305A5]'
-                  }`}
-                >
-                  <IconComponent className="w-5 h-5" />
-                  <span>{tab.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Tabs - Mobile/Tablet */}
-        <div className="lg:hidden bg-white rounded-2xl shadow-sm mb-4 sm:mb-6 overflow-hidden">
-          <div className="flex overflow-x-auto scrollbar-hide p-2 gap-2">
-            {tabs.map((tab) => {
-              const IconComponent = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
-                    activeTab === tab.id
-                      ? 'bg-[#8305A5] text-white shadow-lg'
-                      : 'bg-[#f8f9fa] text-[#666666]'
+                      ? 'bg-[#8305A5] text-white'
+                      : 'text-[#666666] hover:bg-[#8305A5]/5'
                   }`}
                 >
                   <IconComponent className="w-4 h-4" />
@@ -406,162 +371,137 @@ export default function AdminPage() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-sm">
-          {/* Sections Tab */}
-          {activeTab === 'sections' && data?.sections && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8305A5] rounded-xl flex items-center justify-center">
-                  <SectionIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#333333]">أقسام الصفحة الرئيسية</h2>
-                  <p className="text-[#666666] text-sm">إدارة محتوى أقسام الموقع</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                {data.sections.map((section) => (
-                  <SectionEditor
-                    key={section.id}
-                    section={section}
-                    onSave={(content) => handleSaveSection(section.section_key, content)}
-                    saving={saving}
-                  />
-                ))}
-              </div>
-            </div>
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+          {/* Settings Tab */}
+          {activeTab === 'settings' && (
+            <SettingsEditor
+              settings={getSettingsFromSections()}
+              sections={data?.sections || []}
+              onSave={handleSaveSettings}
+              saving={saving}
+              API_URL={API_URL}
+              showMessage={showMessage}
+            />
           )}
 
           {/* Services Tab */}
-          {activeTab === 'services' && data?.services && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="الخدمات"
-                description="إدارة خدمات قهوجي الرياض"
-                icon={ServiceIcon}
-                items={data.services}
-                endpoint="services"
-                fields={[
-                  { name: 'title', label: 'العنوان', type: 'text', placeholder: 'أدخل عنوان الخدمة' },
-                  { name: 'description', label: 'الوصف', type: 'textarea', placeholder: 'أدخل وصف الخدمة' },
-                  { name: 'icon', label: 'الأيقونة', type: 'select', options: ['coffee', 'teapot', 'sparkle', 'star', 'trophy'] },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+          {activeTab === 'services' && (
+            <ItemsEditor
+              title="الخدمات"
+              description="إدارة خدمات قهوجي الرياض (تظهر في قسم 'خدمات قهوجيين وصبابين الرياض')"
+              icon={ServiceIcon}
+              items={data?.services || []}
+              endpoint="services"
+              fields={[
+                { name: 'title', label: 'عنوان الخدمة', type: 'text', placeholder: 'مثال: قهوجي وصباب الرياض للرجال' },
+                { name: 'description', label: 'وصف الخدمة', type: 'textarea', placeholder: 'وصف تفصيلي للخدمة...' },
+                { name: 'icon', label: 'الأيقونة', type: 'select', options: ['coffee', 'teapot', 'sparkle', 'star', 'trophy', 'tie', 'tray'] },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
 
           {/* Features Tab */}
-          {activeTab === 'features' && data?.features && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="المميزات"
-                description="إدارة مميزات الخدمة"
-                icon={StarIcon}
-                items={data.features}
-                endpoint="features"
-                fields={[
-                  { name: 'title', label: 'العنوان', type: 'text', placeholder: 'أدخل عنوان الميزة' },
-                  { name: 'icon', label: 'الأيقونة', type: 'select', options: ['star', 'target', 'coffee', 'trophy', 'tie', 'tray'] },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+          {activeTab === 'features' && (
+            <ItemsEditor
+              title="المميزات"
+              description="إدارة مميزات الخدمة (تظهر في قسم 'من نحن')"
+              icon={StarIcon}
+              items={data?.features || []}
+              endpoint="features"
+              fields={[
+                { name: 'title', label: 'عنوان الميزة', type: 'text', placeholder: 'مثال: خبرة +20 عاماً في الضيافة' },
+                { name: 'icon', label: 'الأيقونة', type: 'select', options: ['star', 'target', 'coffee', 'trophy', 'tie', 'tray'] },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
 
           {/* Events Tab */}
-          {activeTab === 'events' && data?.events && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="المناسبات"
-                description="إدارة أنواع المناسبات"
-                icon={CalendarIcon}
-                items={data.events}
-                endpoint="events"
-                fields={[
-                  { name: 'title', label: 'العنوان', type: 'text', placeholder: 'أدخل نوع المناسبة' },
-                  { name: 'description', label: 'الوصف', type: 'textarea', placeholder: 'أدخل وصف المناسبة (اختياري)' },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+          {activeTab === 'events' && (
+            <ItemsEditor
+              title="المناسبات"
+              description="إدارة أنواع المناسبات (تظهر في قسم 'قهوجي صبابين الرياض للمناسبات')"
+              icon={CalendarIcon}
+              items={data?.events || []}
+              endpoint="events"
+              fields={[
+                { name: 'title', label: 'نوع المناسبة', type: 'text', placeholder: 'مثال: حفلات الزفاف والأعراس' },
+                { name: 'description', label: 'الوصف (اختياري)', type: 'textarea', placeholder: 'وصف إضافي...' },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
 
           {/* Drinks Tab */}
-          {activeTab === 'drinks' && data?.drinks && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="المشروبات"
-                description="إدارة قائمة المشروبات"
-                icon={CoffeeIcon}
-                items={data.drinks}
-                endpoint="drinks"
-                fields={[
-                  { name: 'name', label: 'اسم المشروب', type: 'text', placeholder: 'أدخل اسم المشروب' },
-                  { name: 'category', label: 'الفئة', type: 'select', options: ['القهوة بأنواعها', 'الشاي والأعشاب', 'المشروبات الباردة'] },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+          {activeTab === 'drinks' && (
+            <ItemsEditor
+              title="المشروبات"
+              description="إدارة قائمة المشروبات (تظهر في قسم 'المشروبات التي نقدمها')"
+              icon={CoffeeIcon}
+              items={data?.drinks || []}
+              endpoint="drinks"
+              fields={[
+                { name: 'name', label: 'اسم المشروب', type: 'text', placeholder: 'مثال: القهوة العربية الأصيلة بالهيل والزعفران' },
+                { name: 'category', label: 'الفئة', type: 'select', options: ['القهوة بأنواعها', 'الشاي والأعشاب', 'المشروبات الباردة'] },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
 
           {/* FAQs Tab */}
-          {activeTab === 'faqs' && data?.faqs && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="الأسئلة الشائعة"
-                description="إدارة الأسئلة المتكررة"
-                icon={QuestionIcon}
-                items={data.faqs}
-                endpoint="faqs"
-                fields={[
-                  { name: 'question', label: 'السؤال', type: 'textarea', placeholder: 'أدخل السؤال' },
-                  { name: 'answer', label: 'الجواب', type: 'textarea', placeholder: 'أدخل الجواب' },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+          {activeTab === 'faqs' && (
+            <ItemsEditor
+              title="الأسئلة الشائعة"
+              description="إدارة الأسئلة المتكررة (تظهر في قسم 'الأسئلة المتكررة عن قهوجيين الرياض')"
+              icon={QuestionIcon}
+              items={data?.faqs || []}
+              endpoint="faqs"
+              fields={[
+                { name: 'question', label: 'السؤال', type: 'textarea', placeholder: 'مثال: ما هي أسعار خدمات قهوجيين وصبابين بالرياض؟' },
+                { name: 'answer', label: 'الجواب', type: 'textarea', placeholder: 'الجواب التفصيلي...' },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
 
           {/* Keywords Tab */}
           {activeTab === 'keywords' && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <ItemsEditor
-                title="الكلمات المفتاحية"
-                description="إدارة الكلمات المفتاحية للصفحة الرئيسية"
-                icon={TagIcon}
-                items={data?.keywords || []}
-                endpoint="keywords"
-                fields={[
-                  { name: 'keyword', label: 'الكلمة المفتاحية', type: 'text', placeholder: 'أدخل الكلمة المفتاحية' },
-                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
-                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
-                ]}
-                onSave={handleSaveItem}
-                onDelete={handleDeleteItem}
-                saving={saving}
-              />
-            </div>
+            <ItemsEditor
+              title="الكلمات المفتاحية"
+              description="إدارة الكلمات المفتاحية للـ SEO (تظهر في أسفل الصفحة الرئيسية)"
+              icon={TagIcon}
+              items={data?.keywords || []}
+              endpoint="keywords"
+              fields={[
+                { name: 'keyword', label: 'الكلمة المفتاحية', type: 'text', placeholder: 'مثال: قهوجي الرياض' },
+                { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+              ]}
+              onSave={handleSaveItem}
+              onDelete={handleDeleteItem}
+              saving={saving}
+            />
           )}
         </div>
       </div>
@@ -569,87 +509,186 @@ export default function AdminPage() {
       {/* Footer */}
       <footer className="bg-[#8305A5] text-white py-4 mt-8">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-white/70 text-sm">
-            © {new Date().getFullYear()} قهوجي الرياض - لوحة التحكم
-          </p>
+          <p className="text-white/70 text-sm">© {new Date().getFullYear()} قهوجي الرياض - لوحة التحكم</p>
         </div>
       </footer>
     </div>
   );
 }
 
-// Section Editor Component
-function SectionEditor({ section, onSave, saving }) {
-  const [content, setContent] = useState(section.content || {});
-  const [expanded, setExpanded] = useState(false);
+// Settings Editor Component
+function SettingsEditor({ settings, sections, onSave, saving, API_URL, showMessage }) {
+  const [formData, setFormData] = useState({
+    site_name: settings.site_name || '',
+    site_slogan: settings.site_slogan || '',
+    badge_text: settings.badge_text || '',
+    phone: settings.phone || '',
+    whatsapp: settings.whatsapp || '',
+    stats: settings.stats || []
+  });
 
-  const handleChange = (key, value) => {
-    setContent(prev => ({ ...prev, [key]: value }));
+  const handleStatChange = (index, field, value) => {
+    const newStats = [...formData.stats];
+    newStats[index] = { ...newStats[index], [field]: value };
+    setFormData(prev => ({ ...prev, stats: newStats }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      // Find hero section
+      const heroSection = sections.find(s => s.section_key === 'hero');
+      if (!heroSection) {
+        showMessage('error', 'لم يتم العثور على قسم الهيرو');
+        return;
+      }
+
+      // Update hero section content
+      const content = {
+        site_name: formData.site_name,
+        site_slogan: formData.site_slogan,
+        badge: formData.badge_text,
+        phone: formData.phone,
+        whatsapp: formData.whatsapp,
+        stats: formData.stats
+      };
+
+      const response = await fetch(`${API_URL}/homepage/sections/hero`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          section_name: heroSection.section_name,
+          content: content,
+          is_active: heroSection.is_active
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        showMessage('success', 'تم حفظ الإعدادات بنجاح');
+      } else {
+        showMessage('error', result.message || 'حدث خطأ');
+      }
+    } catch (error) {
+      showMessage('error', 'حدث خطأ في الحفظ');
+    }
   };
 
   return (
-    <div className="border-2 border-[#e9ecef] rounded-xl overflow-hidden hover:border-[#8305A5]/30 transition-colors">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full p-4 sm:p-5 flex items-center justify-between bg-[#f8f9fa] hover:bg-[#e9ecef] transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className={`w-2 h-2 rounded-full ${section.is_active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-          <span className="font-semibold text-[#333333] text-sm sm:text-base">{section.section_name}</span>
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 bg-[#8305A5] rounded-lg flex items-center justify-center">
+          <SettingsIcon className="w-5 h-5 text-white" />
         </div>
-        <span className={`transform transition-transform duration-300 text-[#8305A5] ${expanded ? 'rotate-180' : ''}`}>
-          <ChevronDownIcon className="w-5 h-5" />
-        </span>
-      </button>
+        <div>
+          <h2 className="text-xl font-bold text-[#333333]">الإعدادات العامة</h2>
+          <p className="text-[#666666] text-sm">إدارة إعدادات الموقع الأساسية</p>
+        </div>
+      </div>
 
-      {expanded && (
-        <div className="p-4 sm:p-6 space-y-4 bg-white">
-          {typeof content === 'object' && Object.keys(content).map((key) => (
-            <div key={key}>
-              <label className="block text-sm font-medium text-[#333333] mb-2">
-                {key}
-              </label>
-              {typeof content[key] === 'string' ? (
-                content[key].length > 100 ? (
-                  <textarea
-                    value={content[key]}
-                    onChange={(e) => handleChange(key, e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
-                    rows={3}
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    value={content[key]}
-                    onChange={(e) => handleChange(key, e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base"
-                  />
-                )
-              ) : (
-                <textarea
-                  value={JSON.stringify(content[key], null, 2)}
-                  onChange={(e) => {
-                    try {
-                      handleChange(key, JSON.parse(e.target.value));
-                    } catch {}
-                  }}
-                  className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none font-mono text-xs sm:text-sm transition-colors resize-y min-h-[120px]"
-                  rows={5}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-[#333333] mb-2">اسم الموقع</label>
+          <input
+            type="text"
+            value={formData.site_name}
+            onChange={(e) => setFormData(prev => ({ ...prev, site_name: e.target.value }))}
+            className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
+            placeholder="قهوجي الرياض"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#333333] mb-2">شعار الموقع</label>
+          <input
+            type="text"
+            value={formData.site_slogan}
+            onChange={(e) => setFormData(prev => ({ ...prev, site_slogan: e.target.value }))}
+            className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
+            placeholder="قهوجيين وصبابين الرياض"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-[#333333] mb-2">نص الشارة (Badge)</label>
+          <input
+            type="text"
+            value={formData.badge_text}
+            onChange={(e) => setFormData(prev => ({ ...prev, badge_text: e.target.value }))}
+            className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
+            placeholder="أفضل قهوجي بالرياض - قهوجيين وصبابين"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#333333] mb-2">رقم الهاتف</label>
+          <input
+            type="text"
+            value={formData.phone}
+            onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+            className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
+            placeholder="0509702164"
+            dir="ltr"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[#333333] mb-2">رقم الواتساب (بدون +)</label>
+          <input
+            type="text"
+            value={formData.whatsapp}
+            onChange={(e) => setFormData(prev => ({ ...prev, whatsapp: e.target.value }))}
+            className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
+            placeholder="966509702164"
+            dir="ltr"
+          />
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-[#333333] mb-3">الإحصائيات</label>
+        <div className="grid gap-4 md:grid-cols-3">
+          {formData.stats.map((stat, index) => (
+            <div key={index} className="bg-[#f8f9fa] p-4 rounded-lg">
+              <div className="mb-3">
+                <label className="block text-xs text-[#666666] mb-1">الرقم</label>
+                <input
+                  type="text"
+                  value={stat.num || stat.number || ''}
+                  onChange={(e) => handleStatChange(index, 'num', e.target.value)}
+                  className="w-full px-3 py-2 border border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none text-sm"
+                  placeholder="+20"
                   dir="ltr"
                 />
-              )}
+              </div>
+              <div>
+                <label className="block text-xs text-[#666666] mb-1">التسمية</label>
+                <input
+                  type="text"
+                  value={stat.label || ''}
+                  onChange={(e) => handleStatChange(index, 'label', e.target.value)}
+                  className="w-full px-3 py-2 border border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none text-sm"
+                  placeholder="سنة خبرة"
+                />
+              </div>
             </div>
           ))}
-          <button
-            onClick={() => onSave(content)}
-            disabled={saving}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-[#8305A5] text-white rounded-xl hover:bg-[#6a0485] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            <SaveIcon className="w-5 h-5" />
-            {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
-          </button>
         </div>
-      )}
+      </div>
+
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        className="mt-6 flex items-center justify-center gap-2 px-6 py-3 bg-[#8305A5] text-white rounded-lg hover:bg-[#6a0485] transition-all disabled:opacity-50 font-medium"
+      >
+        <SaveIcon className="w-5 h-5" />
+        {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+      </button>
     </div>
   );
 }
@@ -688,17 +727,17 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8305A5] rounded-xl flex items-center justify-center flex-shrink-0">
-            <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          <div className="w-10 h-10 bg-[#8305A5] rounded-lg flex items-center justify-center">
+            <Icon className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#333333]">{title}</h2>
+            <h2 className="text-xl font-bold text-[#333333]">{title}</h2>
             <p className="text-[#666666] text-sm">{description}</p>
           </div>
         </div>
         <button
           onClick={handleNew}
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-[#F17405] text-white rounded-xl hover:bg-[#d96504] transition-all duration-300 font-medium shadow-lg shadow-[#F17405]/30 w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#F17405] text-white rounded-lg hover:bg-[#d96504] transition-all font-medium"
         >
           <PlusIcon className="w-5 h-5" />
           <span>إضافة جديد</span>
@@ -707,29 +746,27 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
 
       {/* Edit Form */}
       {editingItem && (
-        <div className="bg-[#f8f9fa] p-4 sm:p-6 rounded-2xl mb-6 border-2 border-[#8305A5]/20">
+        <div className="bg-[#f8f9fa] p-4 sm:p-6 rounded-xl mb-6 border-2 border-[#8305A5]/20">
           <h3 className="text-lg font-bold text-[#8305A5] mb-4">
             {editingItem === 'new' ? 'إضافة عنصر جديد' : 'تعديل العنصر'}
           </h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {fields.map((field) => (
               <div key={field.name} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
-                <label className="block text-sm font-medium text-[#333333] mb-2">
-                  {field.label}
-                </label>
+                <label className="block text-sm font-medium text-[#333333] mb-2">{field.label}</label>
                 {field.type === 'textarea' ? (
                   <textarea
                     value={formData[field.name] || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base resize-y min-h-[100px]"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none resize-y min-h-[100px]"
                     rows={3}
                   />
                 ) : field.type === 'select' ? (
                   <select
                     value={formData[field.name] || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.value }))}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base bg-white"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none bg-white"
                   >
                     <option value="">اختر...</option>
                     {field.options.map(opt => (
@@ -742,7 +779,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                       type="checkbox"
                       checked={formData[field.name] || false}
                       onChange={(e) => setFormData(prev => ({ ...prev, [field.name]: e.target.checked }))}
-                      className="w-5 h-5 text-[#8305A5] rounded border-2 border-[#e9ecef] focus:ring-[#8305A5]"
+                      className="w-5 h-5 text-[#8305A5] rounded border-2 border-[#e9ecef]"
                     />
                     <span className="text-[#666666] text-sm">تفعيل العنصر</span>
                   </label>
@@ -755,24 +792,24 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                       [field.name]: field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value
                     }))}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-xl focus:border-[#8305A5] focus:outline-none transition-colors text-sm sm:text-base"
+                    className="w-full px-4 py-3 border-2 border-[#e9ecef] rounded-lg focus:border-[#8305A5] focus:outline-none"
                   />
                 )}
               </div>
             ))}
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          <div className="flex gap-3 mt-6">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#8305A5] text-white rounded-xl hover:bg-[#6a0485] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium w-full sm:w-auto"
+              className="flex items-center gap-2 px-6 py-3 bg-[#8305A5] text-white rounded-lg hover:bg-[#6a0485] transition-all disabled:opacity-50 font-medium"
             >
               <SaveIcon className="w-5 h-5" />
               {saving ? 'جاري الحفظ...' : 'حفظ'}
             </button>
             <button
               onClick={handleCancel}
-              className="px-6 py-3 bg-[#e9ecef] text-[#666666] rounded-xl hover:bg-[#dee2e6] transition-colors font-medium w-full sm:w-auto"
+              className="px-6 py-3 bg-[#e9ecef] text-[#666666] rounded-lg hover:bg-[#dee2e6] transition-colors font-medium"
             >
               إلغاء
             </button>
@@ -783,13 +820,10 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
       {/* Items List */}
       <div className="space-y-3">
         {items.length === 0 ? (
-          <div className="text-center py-12 bg-[#f8f9fa] rounded-2xl">
+          <div className="text-center py-12 bg-[#f8f9fa] rounded-xl">
             <Icon className="w-12 h-12 text-[#e9ecef] mx-auto mb-3" />
             <p className="text-[#666666]">لا توجد عناصر</p>
-            <button
-              onClick={handleNew}
-              className="mt-4 text-[#8305A5] hover:text-[#6a0485] font-medium text-sm"
-            >
+            <button onClick={handleNew} className="mt-4 text-[#8305A5] hover:text-[#6a0485] font-medium text-sm">
               + إضافة عنصر جديد
             </button>
           </div>
@@ -797,38 +831,38 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
           items.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 bg-[#f8f9fa] rounded-xl hover:bg-[#e9ecef] transition-all duration-300 group"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#e9ecef] transition-all"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${item.is_active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  <p className="font-medium text-[#333333] truncate text-sm sm:text-base">
+                  <div className={`w-2 h-2 rounded-full ${item.is_active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  <p className="font-medium text-[#333333] truncate">
                     {item.title || item.question || item.name || item.keyword}
                   </p>
                 </div>
                 {item.category && (
-                  <span className="inline-block text-xs text-white bg-[#8305A5] px-2.5 py-1 rounded-lg mt-1">
+                  <span className="inline-block text-xs text-white bg-[#8305A5] px-2 py-0.5 rounded mt-1">
                     {item.category}
                   </span>
                 )}
-                {item.description && (
-                  <p className="text-[#666666] text-xs sm:text-sm mt-1 line-clamp-2">{item.description}</p>
+                {(item.description || item.answer) && (
+                  <p className="text-[#666666] text-sm mt-1 line-clamp-2">{item.description || item.answer}</p>
                 )}
               </div>
-              <div className="flex gap-2 flex-shrink-0">
+              <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(item)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-[#8305A5] bg-[#8305A5]/10 hover:bg-[#8305A5] hover:text-white rounded-xl transition-all duration-300 text-sm font-medium"
+                  className="flex items-center gap-1.5 px-4 py-2 text-[#8305A5] bg-[#8305A5]/10 hover:bg-[#8305A5] hover:text-white rounded-lg transition-all text-sm font-medium"
                 >
                   <EditIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">تعديل</span>
+                  <span>تعديل</span>
                 </button>
                 <button
                   onClick={() => onDelete(endpoint, item.id)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-xl transition-all duration-300 text-sm font-medium"
+                  className="flex items-center gap-1.5 px-4 py-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-lg transition-all text-sm font-medium"
                 >
                   <TrashIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">حذف</span>
+                  <span>حذف</span>
                 </button>
               </div>
             </div>

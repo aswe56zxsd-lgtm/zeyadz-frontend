@@ -785,6 +785,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Keywords Section - الكلمات المفتاحية */}
+      {displayKeywords.length > 0 && (
+        <section id="keywords" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <div className={`transition-all duration-1000 ${isVisible.keywords ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <div className="text-center mb-4 sm:mb-6">
+                <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
+                  خدماتنا
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
+                  ابحث عن خدماتنا
+                </h2>
+                <p className="text-sm sm:text-base text-[#666666] max-w-2xl mx-auto">
+                  نقدم جميع خدمات <strong className="text-[#8305A5]">قهوجي وصبابين الرياض</strong> التي تحتاجها لمناسبتك
+                </p>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                {displayKeywords.map((keyword, i) => (
+                  <span
+                    key={i}
+                    className="inline-block bg-[#8305A5]/5 hover:bg-[#8305A5] text-[#8305A5] hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 cursor-default border border-[#8305A5]/20 hover:border-[#8305A5]"
+                  >
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Final CTA - Purple Background */}
       <section className="py-6 sm:py-8 lg:py-10 bg-[#8305A5] relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative text-center">

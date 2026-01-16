@@ -50,14 +50,11 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#8305A5] to-[#F17405] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto mb-4 relative overflow-hidden">
-            <Image
+          <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+            <img
               src="/images/logo.webp"
               alt="قهوجي الرياض"
-              fill
-              className="object-contain"
-              style={{ background: 'transparent' }}
-              unoptimized
+              className="w-full h-full object-contain"
             />
           </div>
           <h1 className="text-2xl font-bold text-[#8305A5]">تسجيل الدخول</h1>

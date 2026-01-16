@@ -276,13 +276,12 @@ export default function AdminPage() {
           <div className="flex items-center justify-between h-20 sm:h-24">
             {/* Logo & Title */}
             <div className="flex items-center gap-4 sm:gap-5">
-              <Image
+              <img
                 src="/images/logo.webp"
                 alt="قهوجي الرياض"
                 width={60}
                 height={60}
                 className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] lg:w-[70px] lg:h-[70px] object-contain"
-                unoptimized
               />
               <span className="text-lg sm:text-xl lg:text-2xl font-bold">قهوجي الرياض</span>
             </div>

@@ -300,14 +300,12 @@ export default function Home() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl" aria-label="التنقل الرئيسي">
           <div className="flex items-center justify-between">
             <a href="/" className="flex items-center gap-2 sm:gap-3" aria-label="الصفحة الرئيسية - قهوجي الرياض">
-              <Image
+              <img
                 src="/images/logo.webp"
                 alt="قهوجي الرياض - شعار"
                 width={80}
                 height={80}
                 className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
-                priority
-                unoptimized
               />
               <div>
                 <span className={`text-base sm:text-lg md:text-xl font-bold transition-colors ${scrolled ? 'text-[#8305A5]' : 'text-white'}`}>
@@ -862,13 +860,12 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
-              <Image
+              <img
                 src="/images/logo.webp"
                 alt="قهوجي الرياض - شعار"
                 width={100}
                 height={100}
                 className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
-                unoptimized
               />
               <div>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{siteName}</p>

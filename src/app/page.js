@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useCallback } from 'react';
 
 // SVG Icons Components
 const CoffeeIcon = ({ className = "w-6 h-6" }) => (
@@ -107,7 +106,7 @@ export default function Home() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
   // Fetch data from API
-  const fetchData = async (showLoading = false) => {
+  const fetchData = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
       const controller = new AbortController();
@@ -138,7 +137,7 @@ export default function Home() {
       // Always set loading to false when initial load completes (success or error)
       if (showLoading) setLoading(false);
     }
-  };
+  }, [API_URL]);
 
   // Set loading to false after timeout to prevent infinite loading
   useEffect(() => {
@@ -154,7 +153,7 @@ export default function Home() {
   // Initial fetch
   useEffect(() => {
     fetchData(true);
-  }, [API_URL]);
+  }, [fetchData]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
@@ -162,7 +161,7 @@ export default function Home() {
       fetchData(false);
     }, 30000);
     return () => clearInterval(interval);
-  }, [API_URL]);
+  }, [fetchData]);
 
   // Refresh on window focus (when user returns to tab)
   useEffect(() => {
@@ -171,7 +170,7 @@ export default function Home() {
     };
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [API_URL]);
+  }, [fetchData]);
 
   // Refresh on visibility change (when tab becomes visible)
   useEffect(() => {
@@ -182,7 +181,7 @@ export default function Home() {
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [API_URL]);
+  }, [fetchData]);
 
   useEffect(() => {
     const handleScroll = () => {

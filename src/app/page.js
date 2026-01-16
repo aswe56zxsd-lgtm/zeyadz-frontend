@@ -107,26 +107,58 @@ export default function Home() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
   // Fetch data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_URL}/homepage`, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache'
-          }
-        });
-        const data = await response.json();
-        if (data.success) {
-          setPageData(data.data);
+  const fetchData = async (showLoading = false) => {
+    if (showLoading) setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/homepage`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
-      } catch (error) {
-        console.error('Error fetching homepage data:', error);
-      } finally {
-        setLoading(false);
+      });
+      const data = await response.json();
+      if (data.success) {
+        setPageData(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching homepage data:', error);
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchData(true);
+  }, [API_URL]);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData(false);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [API_URL]);
+
+  // Refresh on window focus (when user returns to tab)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchData(false);
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [API_URL]);
+
+  // Refresh on visibility change (when tab becomes visible)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchData(false);
       }
     };
-    fetchData();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [API_URL]);
 
   useEffect(() => {

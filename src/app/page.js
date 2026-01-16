@@ -423,81 +423,54 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Services Section */}
-        <section className="py-24 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]" id="services">
-          <div className="container mx-auto px-6 md:px-12 lg:px-16">
-            <div className="text-center mb-16">
-              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-4 font-sans">لجميع أنواع المناسبات</h2>
-              <p className="text-text-muted text-sm md:text-base font-normal font-sans">نكيف خدماتنا لتناسب طبيعة وخصوصية مناسبتكم</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
-                <div className="absolute inset-0 bg-coffee-dark transition-colors duration-500 group-hover:bg-gold flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
-                    <Image
-                      src="/images/3.webp"
-                      alt="خدمات قهوجيين لحفلات الزفاف والملكة"
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">حفلات الزفاف والملكة</h3>
-                  <div className="w-12 h-1 bg-gold group-hover:bg-white transition-colors"></div>
-                </div>
+        {/* Services/Events Section */}
+        {pageData?.events && pageData.events.length > 0 && (
+          <section className="py-24 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]" id="services">
+            <div className="container mx-auto px-6 md:px-12 lg:px-16">
+              <div className="text-center mb-16">
+                <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mb-4 font-sans">لجميع أنواع المناسبات</h2>
+                <p className="text-text-muted text-sm md:text-base font-normal font-sans">نكيف خدماتنا لتناسب طبيعة وخصوصية مناسبتكم</p>
               </div>
-              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
-                <div className="absolute inset-0 bg-white transition-colors duration-500 group-hover:bg-coffee-dark flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
-                    <Image
-                      src="/images/4.webp"
-                      alt="خدمات ضيافة للمؤتمرات والفعاليات الرسمية"
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-coffee-dark group-hover:text-white mb-2 transition-colors">المؤتمرات الرسمية</h3>
-                  <div className="w-12 h-1 bg-coffee-dark group-hover:bg-gold transition-colors"></div>
-                </div>
-              </div>
-              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
-                <div className="absolute inset-0 bg-coffee-dark transition-colors duration-500 group-hover:bg-gold flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
-                    <Image
-                      src="/images/5.webp"
-                      alt="صبابين محترفين للعزائم والولائم"
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">العزائم والولائم</h3>
-                  <div className="w-12 h-1 bg-gold group-hover:bg-white transition-colors"></div>
-                </div>
-              </div>
-              <div className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
-                <div className="absolute inset-0 bg-white transition-colors duration-500 group-hover:bg-coffee-dark flex flex-col items-center justify-center p-6 text-center z-10">
-                  <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
-                    <Image
-                      src="/images/6.webp"
-                      alt="خدمات قهوجيين لبيوت العزاء"
-                      width={128}
-                      height={128}
-                      className="object-cover w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-coffee-dark group-hover:text-white mb-2 transition-colors">بيوت العزاء</h3>
-                  <div className="w-12 h-1 bg-coffee-dark group-hover:bg-gold transition-colors"></div>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {pageData.events.slice(0, 4).map((event, index) => {
+                  const isDark = index % 2 === 0;
+                  const defaultImages = ['/images/3.webp', '/images/4.webp', '/images/5.webp', '/images/6.webp'];
+                  const imageSrc = event.image || defaultImages[index % 4];
+                  return (
+                    <div key={event.id} className="group relative h-80 rounded-sm overflow-hidden shadow-lg cursor-pointer border border-gold/10">
+                      <div className={`absolute inset-0 transition-colors duration-500 flex flex-col items-center justify-center p-6 text-center z-10 ${
+                        isDark
+                          ? 'bg-coffee-dark group-hover:bg-gold'
+                          : 'bg-white group-hover:bg-coffee-dark'
+                      }`}>
+                        <div className="octagon-border w-32 h-32 mb-6 mx-auto transition-transform duration-300 group-hover:scale-110">
+                          <Image
+                            src={imageSrc}
+                            alt={event.title}
+                            width={128}
+                            height={128}
+                            className="object-cover w-full h-full"
+                            loading="lazy"
+                          />
+                        </div>
+                        <h3 className={`text-xl font-bold mb-2 transition-colors ${
+                          isDark
+                            ? 'text-white'
+                            : 'text-coffee-dark group-hover:text-white'
+                        }`}>{event.title}</h3>
+                        <div className={`w-12 h-1 transition-colors ${
+                          isDark
+                            ? 'bg-gold group-hover:bg-white'
+                            : 'bg-coffee-dark group-hover:bg-gold'
+                        }`}></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Best Coffee Section */}
         <section className="py-20 bg-white">
@@ -607,34 +580,34 @@ export default function HomePage() {
                   <h2 className="text-xl md:text-2xl font-black text-coffee-dark font-sans">خدماتنا بالتفصيل</h2>
                 </div>
                 <ul className="space-y-4">
-                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
-                    <span className="material-symbols-outlined text-gold mt-1">coffee</span>
-                    <div>
-                      <span className="font-bold text-coffee-dark block text-lg">القهوة العربية</span>
-                      <span className="text-text-muted text-sm">شقراء، غامقة، بالهيل والزعفران والمستكة.</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
-                    <span className="material-symbols-outlined text-gold mt-1">emoji_food_beverage</span>
-                    <div>
-                      <span className="font-bold text-coffee-dark block text-lg">الشاي بأنواعه</span>
-                      <span className="text-text-muted text-sm">أحمر، أخضر، مغربي، كرك، عدني.</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
-                    <span className="material-symbols-outlined text-gold mt-1">local_florist</span>
-                    <div>
-                      <span className="font-bold text-coffee-dark block text-lg">مشروبات الأعشاب</span>
-                      <span className="text-text-muted text-sm">نعناع، حبق، زنجبيل، ليمون، زهورات.</span>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
-                    <span className="material-symbols-outlined text-gold mt-1">nutrition</span>
-                    <div>
-                      <span className="font-bold text-coffee-dark block text-lg">التمور الفاخرة</span>
-                      <span className="text-text-muted text-sm">خلاص، سكري، صقعي (محشي سادة أو مكسرات).</span>
-                    </div>
-                  </li>
+                  {pageData?.services && pageData.services.length > 0 ? (
+                    pageData.services.map((service) => (
+                      <li key={service.id} className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                        <span className="material-symbols-outlined text-gold mt-1">{service.icon || 'coffee'}</span>
+                        <div>
+                          <span className="font-bold text-coffee-dark block text-lg">{service.title}</span>
+                          <span className="text-text-muted text-sm">{service.description}</span>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <>
+                      <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                        <span className="material-symbols-outlined text-gold mt-1">coffee</span>
+                        <div>
+                          <span className="font-bold text-coffee-dark block text-lg">القهوة العربية</span>
+                          <span className="text-text-muted text-sm">شقراء، غامقة، بالهيل والزعفران والمستكة.</span>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-4 bg-white p-5 rounded-lg border border-gold/10 hover:border-gold/40 transition-colors shadow-sm">
+                        <span className="material-symbols-outlined text-gold mt-1">emoji_food_beverage</span>
+                        <div>
+                          <span className="font-bold text-coffee-dark block text-lg">الشاي بأنواعه</span>
+                          <span className="text-text-muted text-sm">أحمر، أخضر، مغربي، كرك، عدني.</span>
+                        </div>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
               <div>
@@ -663,59 +636,53 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="text-center mb-16">
-              <span className="text-gold font-bold tracking-widest uppercase text-xs font-sans">تجارب حقيقية</span>
-              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mt-2 font-sans">آراء العملاء</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-cream-bg p-8 rounded-tl-3xl rounded-br-3xl shadow-lg border border-transparent hover:border-gold/30 transition-all">
-                <div className="flex text-gold mb-4">
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                </div>
-                <p className="text-text-muted italic mb-6 leading-relaxed">"بيض الله وجيهكم، القهوة كايفة والصبابين قمة في الاحترام والأدب. انصح بالتعامل مع مؤسسة نخوة القهوة."</p>
-                <div className="flex items-center gap-3 border-t border-gold/10 pt-4">
-                  <div className="w-10 h-10 bg-coffee-dark rounded-full flex items-center justify-center text-gold font-bold">أ</div>
-                  <p className="font-bold text-coffee-dark text-sm">أبو عبدالله</p>
-                </div>
+        {pageData?.testimonials && pageData.testimonials.length > 0 && (
+          <section className="py-20 bg-white">
+            <div className="container mx-auto px-4 max-w-6xl">
+              <div className="text-center mb-16">
+                <span className="text-gold font-bold tracking-widest uppercase text-xs font-sans">تجارب حقيقية</span>
+                <h2 className="text-2xl md:text-3xl font-black text-coffee-dark mt-2 font-sans">آراء العملاء</h2>
               </div>
-              <div className="bg-coffee-dark text-white p-8 rounded-tl-3xl rounded-br-3xl shadow-xl transform md:-translate-y-2 relative">
-                <div className="absolute top-4 left-4 text-gold/20 text-6xl font-serif">&ldquo;</div>
-                <div className="flex text-gold mb-4">
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                </div>
-                <p className="text-white/90 italic mb-6 leading-relaxed">"تعاملنا معهم في زواج ابني، التزام بالوقت وزي موحد يفتح النفس. شكراً لكم."</p>
-                <div className="flex items-center gap-3 border-t border-white/20 pt-4">
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-coffee-dark font-bold">أ</div>
-                  <p className="font-bold text-white text-sm">أم فهد</p>
-                </div>
-              </div>
-              <div className="bg-cream-bg p-8 rounded-tl-3xl rounded-br-3xl shadow-lg border border-transparent hover:border-gold/30 transition-all">
-                <div className="flex text-gold mb-4">
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span className="material-symbols-outlined text-sm">star</span>
-                </div>
-                <p className="text-text-muted italic mb-6 leading-relaxed">"أفضل قهوجي بالرياض بلا منازع، الدلال نظيفة والقهوة طعمها في الراس."</p>
-                <div className="flex items-center gap-3 border-t border-gold/10 pt-4">
-                  <div className="w-10 h-10 bg-coffee-dark rounded-full flex items-center justify-center text-gold font-bold">م</div>
-                  <p className="font-bold text-coffee-dark text-sm">مشعل العتيبي</p>
-                </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                {pageData.testimonials.slice(0, 3).map((testimonial, index) => {
+                  const isMiddle = index === 1;
+                  const rating = testimonial.rating || 5;
+                  return (
+                    <div
+                      key={testimonial.id}
+                      className={`p-8 rounded-tl-3xl rounded-br-3xl shadow-lg ${
+                        isMiddle
+                          ? 'bg-coffee-dark text-white shadow-xl transform md:-translate-y-2 relative'
+                          : 'bg-cream-bg border border-transparent hover:border-gold/30 transition-all'
+                      }`}
+                    >
+                      {isMiddle && <div className="absolute top-4 left-4 text-gold/20 text-6xl font-serif">&ldquo;</div>}
+                      <div className="flex text-gold mb-4">
+                        {[...Array(rating)].map((_, i) => (
+                          <span key={i} className="material-symbols-outlined text-sm">star</span>
+                        ))}
+                      </div>
+                      <p className={`italic mb-6 leading-relaxed ${isMiddle ? 'text-white/90' : 'text-text-muted'}`}>
+                        "{testimonial.content}"
+                      </p>
+                      <div className={`flex items-center gap-3 border-t pt-4 ${isMiddle ? 'border-white/20' : 'border-gold/10'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                          isMiddle ? 'bg-white text-coffee-dark' : 'bg-coffee-dark text-gold'
+                        }`}>
+                          {testimonial.name?.charAt(0) || 'ع'}
+                        </div>
+                        <div>
+                          <p className={`font-bold text-sm ${isMiddle ? 'text-white' : 'text-coffee-dark'}`}>{testimonial.name}</p>
+                          {testimonial.role && <p className={`text-xs ${isMiddle ? 'text-white/70' : 'text-text-muted'}`}>{testimonial.role}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* FAQ Section */}
         {pageData?.faqs && pageData.faqs.length > 0 && (

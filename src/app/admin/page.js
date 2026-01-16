@@ -95,6 +95,12 @@ const QuestionIcon = ({ className = "w-5 h-5" }) => (
   </svg>
 );
 
+const TagIcon = ({ className = "w-5 h-5" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+  </svg>
+);
+
 export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('sections');
@@ -259,6 +265,7 @@ export default function AdminPage() {
     { id: 'events', name: 'المناسبات', icon: CalendarIcon },
     { id: 'drinks', name: 'المشروبات', icon: CoffeeIcon },
     { id: 'faqs', name: 'الأسئلة الشائعة', icon: QuestionIcon },
+    { id: 'keywords', name: 'الكلمات المفتاحية', icon: TagIcon },
   ];
 
   return (
@@ -270,7 +277,7 @@ export default function AdminPage() {
             {/* Logo & Title */}
             <div className="flex items-center gap-4 sm:gap-5">
               <Image
-                src="/images/logo.webp"
+                src="/images/logo-new-one.webp"
                 alt="قهوجي الرياض"
                 width={60}
                 height={60}
@@ -535,6 +542,27 @@ export default function AdminPage() {
               />
             </div>
           )}
+
+          {/* Keywords Tab */}
+          {activeTab === 'keywords' && (
+            <div className="p-4 sm:p-6 lg:p-8">
+              <ItemsEditor
+                title="الكلمات المفتاحية"
+                description="إدارة الكلمات المفتاحية للصفحة الرئيسية"
+                icon={TagIcon}
+                items={data?.keywords || []}
+                endpoint="keywords"
+                fields={[
+                  { name: 'keyword', label: 'الكلمة المفتاحية', type: 'text', placeholder: 'أدخل الكلمة المفتاحية' },
+                  { name: 'sort_order', label: 'الترتيب', type: 'number' },
+                  { name: 'is_active', label: 'مفعل', type: 'checkbox' },
+                ]}
+                onSave={handleSaveItem}
+                onDelete={handleDeleteItem}
+                saving={saving}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -775,7 +803,7 @@ function ItemsEditor({ title, description, icon: Icon, items, endpoint, fields, 
                 <div className="flex items-center gap-2 mb-1">
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${item.is_active ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   <p className="font-medium text-[#333333] truncate text-sm sm:text-base">
-                    {item.title || item.question || item.name}
+                    {item.title || item.question || item.name || item.keyword}
                   </p>
                 </div>
                 {item.category && (

@@ -52,11 +52,12 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="w-20 h-20 mx-auto mb-4 relative overflow-hidden">
             <Image
-              src="/images/logo-new-one.webp"
+              src="/images/logo.webp"
               alt="قهوجي الرياض"
               fill
               className="object-contain"
               style={{ background: 'transparent' }}
+              unoptimized
             />
           </div>
           <h1 className="text-2xl font-bold text-[#8305A5]">تسجيل الدخول</h1>

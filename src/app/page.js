@@ -263,17 +263,11 @@ export default function Home() {
     ? pageData.events.map(e => e.title)
     : defaultEvents;
 
-  const displayDrinks = pageData?.drinks?.length > 0
-    ? (() => {
-        const categories = {};
-        pageData.drinks.forEach(d => {
-          if (!categories[d.category]) {
-            categories[d.category] = [];
-          }
-          categories[d.category].push(d.name);
-        });
-        return Object.keys(categories).map(cat => ({ category: cat, items: categories[cat] }));
-      })()
+  const displayDrinks = pageData?.drinks && Object.keys(pageData.drinks).length > 0
+    ? Object.keys(pageData.drinks).map(category => ({
+        category: category,
+        items: pageData.drinks[category].map(d => d.title || d.name)
+      }))
     : defaultDrinks;
 
   const displayFaqs = pageData?.faqs?.length > 0
@@ -313,6 +307,7 @@ export default function Home() {
                 height={80}
                 className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
                 priority
+                unoptimized
               />
               <div>
                 <span className={`text-base sm:text-lg md:text-xl font-bold transition-colors ${scrolled ? 'text-[#8305A5]' : 'text-white'}`}>
@@ -873,6 +868,7 @@ export default function Home() {
                 width={100}
                 height={100}
                 className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
+                unoptimized
               />
               <div>
                 <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">{siteName}</p>

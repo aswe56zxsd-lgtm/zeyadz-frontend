@@ -110,23 +110,46 @@ export default function Home() {
   const fetchData = async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
       const response = await fetch(`${API_URL}/homepage`, {
         cache: 'no-store',
+        signal: controller.signal,
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         }
       });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success) {
         setPageData(data.data);
       }
     } catch (error) {
       console.error('Error fetching homepage data:', error);
+      // On error, page will use default data (already defined as fallbacks)
     } finally {
+      // Always set loading to false when initial load completes (success or error)
       if (showLoading) setLoading(false);
     }
   };
+
+  // Set loading to false after timeout to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn('Loading timeout - showing page with default data');
+        setLoading(false);
+      }
+    }, 10000); // 10 second timeout
+    return () => clearTimeout(timeout);
+  }, [loading]);
 
   // Initial fetch
   useEffect(() => {

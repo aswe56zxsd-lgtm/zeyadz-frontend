@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 export default function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [keywords, setKeywords] = useState([]);
+  const [pageData, setPageData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -16,7 +18,7 @@ export default function HomePage() {
     window.addEventListener('scroll', handleScroll);
 
     // Clear cache on mount
-    const version = '3.1.0';
+    const version = '3.2.0';
     const cachedVersion = localStorage.getItem('siteVersion');
     if (cachedVersion !== version) {
       localStorage.setItem('siteVersion', version);
@@ -27,26 +29,62 @@ export default function HomePage() {
       }
     }
 
-    // Fetch keywords
-    const fetchKeywords = async () => {
+    // Fetch all homepage data
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/homepage/keywords`);
+        const response = await fetch(`${API_URL}/homepage`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         const data = await response.json();
         if (data.success) {
-          setKeywords(data.data);
+          setPageData(data.data);
+          setKeywords(data.data.keywords || []);
         }
       } catch (error) {
-        console.error('Error fetching keywords:', error);
+        console.error('Error fetching homepage data:', error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchKeywords();
+    fetchData();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [API_URL]);
 
+  // Get section content helper
+  const getSection = (key) => {
+    if (!pageData?.sections?.[key]) return null;
+    return pageData.sections[key];
+  };
+
+  // Get setting value helper
+  const getSetting = (key, defaultValue = '') => {
+    return pageData?.settings?.[key] || defaultValue;
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Get phone number from settings or use default
+  const phoneNumber = getSetting('phone', '0532637955');
+  const siteName = getSetting('site_name', 'نخوة القهوة');
+  const siteSlogan = getSetting('site_slogan', 'ضيافة ملكية فاخرة');
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-coffee-dark font-bold">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-cream-bg text-text-main antialiased flex flex-col selection:bg-gold selection:text-white font-main">
@@ -57,7 +95,7 @@ export default function HomePage() {
             <div className="w-16 h-16 relative overflow-hidden">
               <Image
                 src="/images/logo-new-one.webp"
-                alt="نخوة القهوة"
+                alt={siteName}
                 fill
                 className="object-contain"
                 priority
@@ -65,9 +103,9 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <h1 className="text-xl font-black text-coffee-dark tracking-wide font-sans">نخوة القهوة</h1>
+              <h1 className="text-xl font-black text-coffee-dark tracking-wide font-sans">{siteName}</h1>
               <div className="h-0.5 w-12 bg-gold mt-1 mb-1"></div>
-              <span className="text-xs text-bronze font-bold uppercase tracking-widest">ضيافة ملكية فاخرة</span>
+              <span className="text-xs text-bronze font-bold uppercase tracking-widest">{siteSlogan}</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -79,15 +117,15 @@ export default function HomePage() {
             </a>
             <a
               className="hidden md:flex items-center gap-2 bg-coffee-dark text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-gold transition-all duration-300 border border-transparent hover:border-coffee-dark/20 hover:scale-105 transform"
-              href="tel:0532637955"
-              aria-label="اتصل بنا على 0532637955"
+              href={`tel:${phoneNumber}`}
+              aria-label={`اتصل بنا على ${phoneNumber}`}
             >
               <span className="material-symbols-outlined text-sm">call</span>
-              <span>0532637955</span>
+              <span>{phoneNumber}</span>
             </a>
             <a
               className="md:hidden text-coffee-dark border-2 border-coffee-dark/30 p-3 rounded-full flex items-center justify-center hover:bg-coffee-dark hover:text-white transition-all duration-300 hover:scale-110 transform"
-              href="tel:0532637955"
+              href={`tel:${phoneNumber}`}
               aria-label="اتصل بنا"
             >
               <span className="material-symbols-outlined">call</span>
@@ -99,52 +137,63 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="flex-grow">
         {/* Hero Section */}
-        <div className="relative min-h-[650px] flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <Image
-              alt="قهوجي الرياض - صباب محترف يقدم القهوة العربية الأصيلة في مناسبة فاخرة"
-              src="/images/3.webp"
-              fill
-              className="object-cover scale-105"
-              priority
-            />
-          </div>
-          <div className="container mx-auto px-6 md:px-12 lg:px-16 relative z-10 py-20">
-            <div className="max-w-4xl mx-auto md:mx-0 md:mr-auto text-right text-white space-y-8 pl-0 md:pl-20">
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/40 rounded-sm px-4 py-1.5 mb-2">
-                <span className="material-symbols-outlined text-white text-sm">star</span>
-                <span className="text-white font-bold text-sm tracking-wide">الخيار الأول للضيافة في الرياض</span>
+        {(() => {
+          const heroSection = getSection('hero');
+          const heroContent = heroSection?.content || {};
+          const badge = heroContent.badge || 'الخيار الأول للضيافة في الرياض';
+          const title = heroContent.title || 'قهوجي الرياض';
+          const subtitle = heroContent.subtitle || 'فخامة الضيافة العربية الأصيلة';
+          const description = heroContent.description || 'نقدم لكم أرقى خدمات القهوة والشاي بلمسة تراثية فاخرة تليق بضيوفكم ومناسباتكم الكبرى.';
+
+          return (
+            <div className="relative min-h-[650px] flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 z-0">
+                <Image
+                  alt="قهوجي الرياض - صباب محترف يقدم القهوة العربية الأصيلة في مناسبة فاخرة"
+                  src="/images/3.webp"
+                  fill
+                  className="object-cover scale-105"
+                  priority
+                />
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight font-sans text-white" style={{ textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5)' }}>
-                قهوجي <span className="text-white" style={{ textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5)' }}>الرياض</span>
-                <span className="block text-2xl md:text-3xl lg:text-4xl mt-4 font-bold text-white" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>فخامة الضيافة العربية الأصيلة</span>
-              </h1>
-              <p className="text-lg md:text-xl font-medium text-white max-w-2xl leading-relaxed border-r-4 border-white pr-6 font-sans" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9)' }}>
-                نقدم لكم أرقى خدمات القهوة والشاي بلمسة تراثية فاخرة تليق بضيوفكم ومناسباتكم الكبرى.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-5 pt-4">
-                <a
-                  className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-black text-xl shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 group hover:scale-105 transform"
-                  href="tel:0532637955"
-                  style={{ boxShadow: '0 10px 40px rgba(183,66,167,0.4)' }}
-                  aria-label="اطلب خدمة القهوجيين الآن - اتصل على 0532637955"
-                >
-                  <span className="material-symbols-outlined group-hover:rotate-12 transition-transform text-2xl">coffee_maker</span>
-                  اطلب الخدمة الآن
-                </a>
-                <a
-                  className="bg-white/10 backdrop-blur-md border-2 border-white hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform"
-                  href="#about"
-                  style={{ boxShadow: '0 10px 30px rgba(255,255,255,0.2)' }}
-                  aria-label="اكتشف المزيد عن خدماتنا"
-                >
-                  اكتشف المزيد
-                </a>
+              <div className="container mx-auto px-6 md:px-12 lg:px-16 relative z-10 py-20">
+                <div className="max-w-4xl mx-auto md:mx-0 md:mr-auto text-right text-white space-y-8 pl-0 md:pl-20">
+                  <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/40 rounded-sm px-4 py-1.5 mb-2">
+                    <span className="material-symbols-outlined text-white text-sm">star</span>
+                    <span className="text-white font-bold text-sm tracking-wide">{badge}</span>
+                  </div>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight font-sans text-white" style={{ textShadow: '3px 3px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5)' }}>
+                    {title}
+                    <span className="block text-2xl md:text-3xl lg:text-4xl mt-4 font-bold text-white" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.9)' }}>{subtitle}</span>
+                  </h1>
+                  <p className="text-lg md:text-xl font-medium text-white max-w-2xl leading-relaxed border-r-4 border-white pr-6 font-sans" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9)' }}>
+                    {description}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-5 pt-4">
+                    <a
+                      className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-black text-xl shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 group hover:scale-105 transform"
+                      href={`tel:${phoneNumber}`}
+                      style={{ boxShadow: '0 10px 40px rgba(183,66,167,0.4)' }}
+                      aria-label={`اطلب خدمة القهوجيين الآن - اتصل على ${phoneNumber}`}
+                    >
+                      <span className="material-symbols-outlined group-hover:rotate-12 transition-transform text-2xl">coffee_maker</span>
+                      اطلب الخدمة الآن
+                    </a>
+                    <a
+                      className="bg-white/10 backdrop-blur-md border-2 border-white hover:bg-white hover:text-coffee-dark text-white px-10 py-5 rounded-2xl font-bold text-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform"
+                      href="#about"
+                      style={{ boxShadow: '0 10px 30px rgba(255,255,255,0.2)' }}
+                      aria-label="اكتشف المزيد عن خدماتنا"
+                    >
+                      اكتشف المزيد
+                    </a>
+                  </div>
+                </div>
               </div>
+              <div className="absolute bottom-0 left-0 w-full h-16 bg-cream-bg" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 0, 0 100%)' }}></div>
             </div>
-          </div>
-          <div className="absolute bottom-0 left-0 w-full h-16 bg-cream-bg" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 0, 0 100%)' }}></div>
-        </div>
+          );
+        })()}
 
         {/* About Section */}
         <section className="py-20 relative bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]" id="about">
@@ -292,7 +341,7 @@ export default function HomePage() {
                   <div className="md:w-1/2 text-right">
                     <h2 className="text-xl md:text-2xl font-black text-coffee-dark mb-6 font-sans">خدمة قهوجيين بالرياض تضمن لك:</h2>
                     <p className="text-sm md:text-base text-text-muted mb-8 leading-relaxed border-r-4 border-coffee-dark pr-4 font-sans">معاييرنا لا تقبل القسمة على اثنين، الجودة لدينا التزام وليست خياراً.</p>
-                    <a className="inline-flex items-center gap-3 bg-coffee-dark text-white px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-coffee-dark transition-all duration-300 shadow-lg hover:scale-105 transform" href="tel:0532637955" aria-label="احجز موعدك الآن - اتصل على 0532637955">
+                    <a className="inline-flex items-center gap-3 bg-coffee-dark text-white px-8 py-3 rounded-2xl font-bold hover:bg-white hover:text-coffee-dark transition-all duration-300 shadow-lg hover:scale-105 transform" href={`tel:${phoneNumber}`} aria-label={`احجز موعدك الآن - اتصل على ${phoneNumber}`}>
                       <span className="material-symbols-outlined">call</span>
                       احجز موعدك الآن
                     </a>
@@ -535,11 +584,11 @@ export default function HomePage() {
                 <p className="text-white text-xs font-sans">متواجدون على مدار 24 ساعة</p>
               </div>
               <div className="flex gap-4 w-full md:w-auto flex-col sm:flex-row">
-                <a className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href="tel:0532637955" aria-label="اتصل على 0532637955">
+                <a className="bg-gold hover:bg-white hover:text-coffee-dark text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href={`tel:${phoneNumber}`} aria-label={`اتصل على ${phoneNumber}`}>
                   <span className="material-symbols-outlined">phone_iphone</span>
-                  <span>0532637955</span>
+                  <span>{phoneNumber}</span>
                 </a>
-                <a className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href="https://wa.me/966532637955" aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
+                <a className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 transform" href={`https://wa.me/966${phoneNumber.replace(/^0/, '')}`} aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
                   <span className="material-symbols-outlined">chat</span>
                   <span>واتساب</span>
                 </a>
@@ -669,25 +718,21 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-2xl md:text-3xl font-black text-coffee-dark text-center mb-10 font-sans">الأسئلة الشائعة</h2>
-            <div className="space-y-4">
-              <div className="bg-white border-r-4 border-gold rounded-l-lg p-6 shadow-sm">
-                <h3 className="font-bold text-coffee-dark text-lg mb-2">هل توفرون القهوة والشاي أم فقط الصبابين؟</h3>
-                <p className="text-text-muted text-sm">نوفر خدمة شاملة (القهوة، الشاي، التمور، الأكواب، الدلال) أو خدمة صبابين فقط حسب رغبة العميل.</p>
-              </div>
-              <div className="bg-white border-r-4 border-coffee-dark rounded-l-lg p-6 shadow-sm">
-                <h3 className="font-bold text-coffee-dark text-lg mb-2">كم سعر القهوجي في الرياض؟</h3>
-                <p className="text-text-muted text-sm">الأسعار تختلف حسب عدد الصبابين، نوع المناسبة، ومدة الخدمة. تواصل معنا للحصول على أفضل عرض سعر.</p>
-              </div>
-              <div className="bg-white border-r-4 border-gold rounded-l-lg p-6 shadow-sm">
-                <h3 className="font-bold text-coffee-dark text-lg mb-2">هل لديكم زي موحد؟</h3>
-                <p className="text-text-muted text-sm">نعم، يلتزم جميع العاملين لدينا بزي سعودي رسمي موحد ونظيف يليق بمناسباتكم.</p>
+        {pageData?.faqs && pageData.faqs.length > 0 && (
+          <section className="py-16 bg-cream-bg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjNEEyQzJBIiBmaWxsLW9wYWNpdHk9IjAuMDIiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjMiLz48Y2lyY2xlIGN4PSIxMyIgY3k9IjEzIiByPSIzIi8+PC9nPjwvc3ZnPg==')]">
+            <div className="container mx-auto px-4 max-w-4xl">
+              <h2 className="text-2xl md:text-3xl font-black text-coffee-dark text-center mb-10 font-sans">الأسئلة الشائعة</h2>
+              <div className="space-y-4">
+                {pageData.faqs.map((faq, index) => (
+                  <div key={faq.id} className={`bg-white border-r-4 ${index % 2 === 0 ? 'border-gold' : 'border-coffee-dark'} rounded-l-lg p-6 shadow-sm`}>
+                    <h3 className="font-bold text-coffee-dark text-lg mb-2">{faq.question}</h3>
+                    <p className="text-text-muted text-sm">{faq.answer}</p>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Keywords Section */}
         {keywords.length > 0 && (
@@ -723,9 +768,9 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-8">
               <a
                 className="inline-flex items-center gap-4 bg-gradient-to-r from-gold via-primary-magenta to-gold hover:from-white hover:to-white hover:text-coffee-dark text-white px-14 py-6 rounded-3xl font-black text-2xl shadow-2xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2"
-                href="tel:0532637955"
+                href={`tel:${phoneNumber}`}
                 style={{ boxShadow: '0 15px 50px rgba(183,66,167,0.5)' }}
-                aria-label="اتصل الآن على 0532637955"
+                aria-label={`اتصل الآن على ${phoneNumber}`}
               >
                 <span className="material-symbols-outlined text-4xl">call</span>
                 اتصل الآن
@@ -767,15 +812,15 @@ export default function HomePage() {
                 <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#"><span className="material-symbols-outlined text-xs">chevron_left</span>الرئيسية</a></li>
                 <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#about"><span className="material-symbols-outlined text-xs">chevron_left</span>من نحن</a></li>
                 <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="#services"><span className="material-symbols-outlined text-xs">chevron_left</span>خدماتنا</a></li>
-                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href="tel:0506451744"><span className="material-symbols-outlined text-xs">chevron_left</span>اتصل بنا</a></li>
+                <li><a className="hover:text-gold transition-colors flex items-center justify-center md:justify-start gap-2" href={`tel:${phoneNumber}`}><span className="material-symbols-outlined text-xs">chevron_left</span>اتصل بنا</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 inline-block">تواصل معنا</h3>
               <div className="space-y-4">
-                <a href="tel:0532637955" className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors" aria-label="اتصل بنا على 0532637955">
+                <a href={`tel:${phoneNumber}`} className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors" aria-label={`اتصل بنا على ${phoneNumber}`}>
                   <span className="material-symbols-outlined text-gold">call</span>
-                  <span dir="ltr">0532637955</span>
+                  <span dir="ltr">{phoneNumber}</span>
                 </a>
                 <p className="flex items-center justify-center md:justify-start gap-3 text-white hover:text-gold transition-colors">
                   <span className="material-symbols-outlined text-gold">location_on</span>
@@ -796,11 +841,11 @@ export default function HomePage() {
                   <span className="material-symbols-outlined text-base">language</span>
                   <span>الموقع</span>
                 </a>
-                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href="https://wa.me/966532637955" target="_blank" rel="noopener noreferrer" title="واتساب" aria-label="تواصل معنا عبر واتساب">
+                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href={`https://wa.me/966${phoneNumber.replace(/^0/, '')}`} target="_blank" rel="noopener noreferrer" title="واتساب" aria-label="تواصل معنا عبر واتساب">
                   <span className="material-symbols-outlined text-base">chat</span>
                   <span>واتساب</span>
                 </a>
-                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href="tel:0532637955" title="اتصل بنا" aria-label="اتصل بنا على 0532637955">
+                <a className="text-gray-400 hover:text-gold transition-colors flex items-center gap-2 text-sm" href={`tel:${phoneNumber}`} title="اتصل بنا" aria-label={`اتصل بنا على ${phoneNumber}`}>
                   <span className="material-symbols-outlined text-base">call</span>
                   <span>اتصل</span>
                 </a>

@@ -306,9 +306,20 @@ export default function Home() {
     ? pageData.faqs.map(f => ({ q: f.question, a: f.answer }))
     : defaultFaqs;
 
+  // Default keywords for SEO
+  const defaultKeywords = [
+    'قهوجي الرياض',
+    'قهوجيين الرياض',
+    'صبابين الرياض',
+    'قهوجي وصباب',
+    'صباب قهوة',
+    'مباشرين قهوة',
+    'قهوجيين وصبابين بالرياض'
+  ];
+
   const displayKeywords = pageData?.keywords?.length > 0
     ? pageData.keywords.map(k => k.keyword)
-    : [];
+    : defaultKeywords;
 
   // Loading screen with purple theme
   if (loading) {

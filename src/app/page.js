@@ -299,10 +299,15 @@ export default function Home() {
   };
 
   // Dynamic data with fallbacks - الألوان ثابتة (#8305A5 و #F17405)
-  const phoneNumber = getSetting('phone', '0509702164');
+  const phoneNumber = getSetting('phone_number', '0509702164');
   const siteName = getSetting('site_name', 'قهوجي الرياض');
   const siteSlogan = getSetting('site_slogan', 'قهوجيين وصبابين الرياض');
-  const whatsappNumber = getSetting('whatsapp', '966509702164');
+  const whatsappNumber = getSetting('whatsapp_number', '966509702164');
+
+  // Get dynamic whyus_features and host_services from settings
+  const whyUsFeaturesDynamic = pageData?.settings?.whyus_features || whyUsFeatures;
+  const hostServicesDynamic = pageData?.settings?.host_services || hostServices;
+  const bookingStepsDynamic = pageData?.settings?.booking_steps || steps;
 
   // Use API data if available, otherwise use defaults
   const displayServices = pageData?.services?.length > 0
@@ -502,7 +507,7 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {whyUsFeatures.map((feature, i) => (
+              {whyUsFeaturesDynamic.map((feature, i) => (
                 <div
                   key={i}
                   className="group bg-white p-4 rounded-xl text-center hover:bg-[#F17405] transition-all duration-500 transform hover:-translate-y-1 shadow-md"
@@ -655,7 +660,7 @@ export default function Home() {
                 </p>
                 <h3 className="text-base sm:text-lg font-bold text-[#8305A5] mb-3">ما يقدمه مضيف القهوة:</h3>
                 <ul className="space-y-2">
-                  {hostServices.map((service, i) => (
+                  {hostServicesDynamic.map((service, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <span className="w-6 h-6 bg-[#8305A5] rounded-full flex items-center justify-center flex-shrink-0">
                         <CheckIcon className="w-3 h-3 text-white" />
@@ -744,7 +749,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {steps.map((step, i) => (
+              {bookingStepsDynamic.map((step, i) => (
                 <div key={i} className="relative group">
                   <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-[#8305A5]/10 hover:border-[#8305A5] transition-all duration-500 hover:shadow-lg text-center">
                     <div className="text-2xl sm:text-3xl font-black text-[#8305A5]/20 group-hover:text-[#8305A5]/40 transition-colors mb-2">

@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  metadataBase: new URL('https://qahwajiz.com'),
+  metadataBase: new URL('https://zeyadz.com'),
   title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات والحفلات - 0532637955',
   description: 'قهوجي الرياض - أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات. قهوجي وصباب محترف للأعراس والمؤتمرات. احجز الآن 0532637955',
   keywords: 'قهوجي الرياض, قهوجيين الرياض, صبابين الرياض, قهوجي وصباب, صبابات قهوة, مباشرين قهوة, قهوجيين وصبابين بالرياض, أرقام قهوجيين, قهوجي للمناسبات, صباب قهوة الرياض',
@@ -17,7 +17,7 @@ export const metadata = {
   openGraph: {
     title: 'قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات - 0532637955',
     description: 'أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة 20 عاماً. احجز الآن!',
-    url: 'https://qahwajiz.com',
+    url: 'https://zeyadz.com',
     siteName: 'قهوجي الرياض',
     locale: 'ar_SA',
     type: 'website',
@@ -48,9 +48,9 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: 'https://qahwajiz.com',
+    canonical: 'https://zeyadz.com',
     languages: {
-      'ar-SA': 'https://qahwajiz.com',
+      'ar-SA': 'https://zeyadz.com',
     },
   },
   verification: {
@@ -72,14 +72,14 @@ export default function RootLayout({ children }) {
     "@graph": [
       {
         "@type": "LocalBusiness",
-        "@id": "https://qahwajiz.com/#business",
+        "@id": "https://zeyadz.com/#business",
         "name": "قهوجي الرياض",
         "alternateName": "قهوجيين وصبابين الرياض",
         "description": "أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض. خبرة تزيد عن 20 عاماً في الضيافة العربية الأصيلة.",
-        "url": "https://qahwajiz.com",
+        "url": "https://zeyadz.com",
         "telephone": "+966532637955",
         "priceRange": "$$",
-        "image": "https://qahwajiz.com/og-image.png",
+        "image": "https://zeyadz.com/og-image.png",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "الرياض",
@@ -110,25 +110,25 @@ export default function RootLayout({ children }) {
       },
       {
         "@type": "WebSite",
-        "@id": "https://qahwajiz.com/#website",
-        "url": "https://qahwajiz.com",
+        "@id": "https://zeyadz.com/#website",
+        "url": "https://zeyadz.com",
         "name": "قهوجي الرياض",
         "description": "أفضل خدمات قهوجيين وصبابين الرياض",
         "publisher": {
-          "@id": "https://qahwajiz.com/#business"
+          "@id": "https://zeyadz.com/#business"
         },
         "inLanguage": "ar-SA"
       },
       {
         "@type": "WebPage",
-        "@id": "https://qahwajiz.com/#webpage",
-        "url": "https://qahwajiz.com",
+        "@id": "https://zeyadz.com/#webpage",
+        "url": "https://zeyadz.com",
         "name": "قهوجي الرياض | أفضل قهوجيين وصبابين للمناسبات",
         "isPartOf": {
-          "@id": "https://qahwajiz.com/#website"
+          "@id": "https://zeyadz.com/#website"
         },
         "about": {
-          "@id": "https://qahwajiz.com/#business"
+          "@id": "https://zeyadz.com/#business"
         },
         "description": "أفضل خدمات قهوجيين وصبابين للمناسبات والحفلات في الرياض",
         "inLanguage": "ar-SA"
@@ -137,7 +137,7 @@ export default function RootLayout({ children }) {
         "@type": "Service",
         "name": "خدمات قهوجيين وصبابين الرياض",
         "provider": {
-          "@id": "https://qahwajiz.com/#business"
+          "@id": "https://zeyadz.com/#business"
         },
         "serviceType": "خدمات ضيافة ومناسبات",
         "areaServed": "الرياض",

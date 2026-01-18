@@ -1,7 +1,7 @@
 export default function sitemap() {
   return [
     {
-      url: 'https://qahwajiz.com',
+      url: 'https://zeyadz.com',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,

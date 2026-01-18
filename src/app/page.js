@@ -101,86 +101,46 @@ export default function Home() {
 
   // Dynamic data states
   const [pageData, setPageData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Start with false to show default content immediately
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
   // Fetch data from API
-  const fetchData = useCallback(async (showLoading = false) => {
-    if (showLoading) setLoading(true);
+  const fetchData = useCallback(async () => {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-
       const response = await fetch(`${API_URL}/homepage`, {
         cache: 'no-store',
-        signal: controller.signal,
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         }
       });
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      if (data.success) {
+      if (data.success && data.data) {
         setPageData(data.data);
       }
     } catch (error) {
       console.error('Error fetching homepage data:', error);
-      // On error, page will use default data (already defined as fallbacks)
-    } finally {
-      // Always set loading to false when initial load completes (success or error)
-      if (showLoading) setLoading(false);
+      // On error, page will continue showing default data
     }
   }, [API_URL]);
 
-  // Set loading to false after timeout to prevent infinite loading
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (loading) {
-        console.warn('Loading timeout - showing page with default data');
-        setLoading(false);
-      }
-    }, 10000); // 10 second timeout
-    return () => clearTimeout(timeout);
-  }, [loading]);
-
   // Initial fetch
   useEffect(() => {
-    fetchData(true);
+    fetchData();
   }, [fetchData]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData(false);
+      fetchData();
     }, 30000);
     return () => clearInterval(interval);
-  }, [fetchData]);
-
-  // Refresh on window focus (when user returns to tab)
-  useEffect(() => {
-    const handleFocus = () => {
-      fetchData(false);
-    };
-    window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
-  }, [fetchData]);
-
-  // Refresh on visibility change (when tab becomes visible)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchData(false);
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [fetchData]);
 
   useEffect(() => {

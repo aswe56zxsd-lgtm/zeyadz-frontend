@@ -258,11 +258,24 @@ export default function Home() {
     return pageData?.settings?.[key] || defaultValue;
   };
 
+  // Get section content with fallback - works for any section
+  const getSectionContent = (section, key, defaultValue = '') => {
+    return pageData?.sections?.[section]?.content?.[key] || defaultValue;
+  };
+
+  // Get section content with fallback
+  const getHeroContent = (key, defaultValue = '') => {
+    return getSectionContent('hero', key, defaultValue);
+  };
+
   // Dynamic data with fallbacks - الألوان ثابتة (#8305A5 و #F17405)
-  const phoneNumber = getSetting('phone_number', '0509702164');
-  const siteName = getSetting('site_name', 'قهوجي الرياض');
-  const siteSlogan = getSetting('site_slogan', 'قهوجيين وصبابين الرياض');
-  const whatsappNumber = getSetting('whatsapp_number', '966509702164');
+  // Priority: sections.hero.content (from admin panel) > settings > default
+  const phoneNumber = getHeroContent('phone', '') || getSetting('phone_number', '0509702164');
+  const siteName = getHeroContent('site_name', '') || getSetting('site_name', 'قهوجي الرياض');
+  const siteSlogan = getHeroContent('site_slogan', '') || getSetting('site_slogan', 'قهوجيين وصبابين الرياض');
+  const whatsappNumber = getHeroContent('whatsapp', '') || getSetting('whatsapp_number', '966509702164');
+  const heroBadge = getHeroContent('badge', 'أفضل قهوجي بالرياض - قهوجيين وصبابين');
+  const heroStats = getHeroContent('stats', null);
 
   // Get dynamic whyus_features and host_services from settings
   const whyUsFeaturesDynamic = pageData?.settings?.whyus_features || whyUsFeatures;
@@ -358,14 +371,14 @@ export default function Home() {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-[#8305A5]/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6" role="status" aria-live="polite">
               <span className="w-1.5 h-1.5 bg-[#F17405] rounded-full animate-pulse" aria-hidden="true"></span>
-              <span className="text-[#8305A5] text-xs sm:text-sm font-semibold">أفضل قهوجي بالرياض - قهوجيين وصبابين</span>
+              <span className="text-[#8305A5] text-xs sm:text-sm font-semibold">{heroBadge}</span>
             </div>
 
             <h1 id="hero-title" className="text-3xl sm:text-4xl md:text-5xl font-black text-[#8305A5] mb-3 sm:mb-4 leading-tight">
-              قهوجي الرياض
+              {siteName}
             </h1>
             <p className="text-xl sm:text-2xl md:text-3xl font-bold text-[#F17405] mb-4 sm:mb-6">
-              قهوجيين وصبابين الرياض
+              {siteSlogan}
             </p>
 
             <p className="text-sm sm:text-base text-[#666666] max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
@@ -398,13 +411,13 @@ export default function Home() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-xl mx-auto mt-10 sm:mt-12 px-4">
-              {[
-                { num: '+20', label: 'سنة خبرة' },
-                { num: '+5000', label: 'مناسبة' },
-                { num: '+50', label: 'قهوجي محترف' }
-              ].map((stat, i) => (
+              {(heroStats || [
+                { number: '+20', label: 'سنة خبرة' },
+                { number: '+5000', label: 'مناسبة' },
+                { number: '+50', label: 'قهوجي محترف' }
+              ]).map((stat, i) => (
                 <div key={i} className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#F17405]">{stat.num}</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#F17405]">{stat.number || stat.num}</div>
                   <div className="text-[#666666] text-[10px] sm:text-xs mt-1">{stat.label}</div>
                 </div>
               ))}

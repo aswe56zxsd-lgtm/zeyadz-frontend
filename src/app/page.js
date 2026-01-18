@@ -787,27 +787,36 @@ export default function Home() {
 
       {/* Keywords Section - الكلمات المفتاحية */}
       {displayKeywords.length > 0 && (
-        <section id="keywords" data-animate className="py-6 sm:py-8 lg:py-10 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+        <section id="keywords" data-animate className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-[#8305A5] to-[#6a0485] relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 right-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+            <div className="absolute bottom-10 left-10 w-40 h-40 bg-[#F17405] rounded-full blur-3xl"></div>
+          </div>
+
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl relative">
             <div className={`transition-all duration-1000 ${isVisible.keywords ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <div className="text-center mb-4 sm:mb-6">
-                <span className="inline-block bg-[#8305A5]/10 text-[#8305A5] px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
-                  خدماتنا
+              <div className="text-center mb-6 sm:mb-8">
+                <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-semibold mb-3">
+                  الكلمات المفتاحية
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#8305A5] mb-4">
-                  ابحث عن خدماتنا
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
+                  خدماتنا الأكثر بحثاً
                 </h2>
-                <p className="text-sm sm:text-base text-[#666666] max-w-2xl mx-auto">
-                  نقدم جميع خدمات <strong className="text-[#8305A5]">قهوجي وصبابين الرياض</strong> التي تحتاجها لمناسبتك
+                <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto">
+                  اكتشف أفضل خدمات <strong className="text-[#F17405]">قهوجي وصبابين الرياض</strong> التي يبحث عنها عملاؤنا
                 </p>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
                 {displayKeywords.map((keyword, i) => (
                   <span
                     key={i}
-                    className="inline-block bg-[#8305A5]/5 hover:bg-[#8305A5] text-[#8305A5] hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 cursor-default border border-[#8305A5]/20 hover:border-[#8305A5]"
+                    className="inline-flex items-center gap-2 bg-white text-[#8305A5] px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-default border-2 border-white/50 hover:border-[#F17405] hover:bg-[#F17405] hover:text-white"
                   >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    </svg>
                     {keyword}
                   </span>
                 ))}
